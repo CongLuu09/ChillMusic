@@ -72,6 +72,50 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+
+        holder.btnEdit.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Đổi tên âm thanh");
+
+            final EditText input = new EditText(context);
+            input.setText(layer.getName());
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+
+            builder.setPositiveButton("Lưu", (dialog, which) -> {
+                String newName = input.getText().toString().trim();
+                if (!newName.isEmpty()) {
+                    AppDatabase db = new AppDatabase(context);
+                    db.updateSoundName(layer.getName(), newName);
+                    layer.setName(newName);
+                    notifyItemChanged(holder.getAdapterPosition());
+                }
+            });
+
+            builder.setNegativeButton("Huỷ", null);
+            builder.show();
+        });
+
+
+        holder.btnDelete.setOnClickListener(v -> {
+            int pos = holder.getAdapterPosition();
+
+            new AlertDialog.Builder(context)
+                    .setTitle("Xoá âm thanh")
+                    .setMessage("Bạn có chắc muốn xoá \"" + layer.getName() + "\" không?")
+                    .setPositiveButton("Xoá", (dialog, which) -> {
+                        AppDatabase db = new AppDatabase(context);
+                        db.deleteSoundByName(layer.getName());
+
+                        releaseLayer(layer);
+                        layers.remove(pos);
+                        notifyItemRemoved(pos);
+                    })
+                    .setNegativeButton("Huỷ", null)
+                    .show();
+        });
+
+
     }
 
 
