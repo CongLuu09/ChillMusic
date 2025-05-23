@@ -44,9 +44,9 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         LayerSound layer = layers.get(position);
 
-        holder.tvName.setText(layer.getName());
-        holder.imgIcon.setImageResource(layer.getIconResId());
-        holder.seekBar.setProgress((int) (layer.getVolume() * 100));
+        holder.tvLayerName.setText(layer.getName());
+        holder.imgLayerIcon.setImageResource(layer.getIconResId());
+        holder.seekBarVolume.setProgress((int) (layer.getVolume() * 100));
 
 
         if (layer.getMediaPlayer() == null) {
