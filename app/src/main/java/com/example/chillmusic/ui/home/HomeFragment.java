@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chillmusic.R;
 import com.example.chillmusic.adapter.SoundAdapter;
 import com.example.chillmusic.models.Sound;
+import com.example.chillmusic.ui.player.Forest.ForestActivity;
 import com.example.chillmusic.ui.player.OceanActivity;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class HomeFragment extends Fragment {
             if (sound.getTitle().equals("Ocean")) {
                 startActivity(new Intent(getContext(), OceanActivity.class));
             } else if (sound.getTitle().equals("Forest")) {
-//                startActivity(new Intent(getContext(), ForestActivity.class));
+                startActivity(new Intent(getContext(), ForestActivity.class));
             } else if (sound.getTitle().equals("Rain")) {
 //                startActivity(new Intent(getContext(), RainActivity.class));
             } else if (sound.getTitle().equals("Night")) {

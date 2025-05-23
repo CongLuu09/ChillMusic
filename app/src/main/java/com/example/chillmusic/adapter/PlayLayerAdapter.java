@@ -140,12 +140,14 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
 
     public void addLayer(LayerSound layer) {
 
+        String newName = layer.getName().trim().toLowerCase();
         for (LayerSound l : layers) {
-            if (l.getName().equalsIgnoreCase(layer.getName())) {
+            if (l.getName().trim().toLowerCase().equals(newName)) {
                 Toast.makeText(context, "Đã tồn tại âm thanh \"" + layer.getName() + "\"", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
+
 
 
         layers.add(layer);
@@ -163,6 +165,7 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
             db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId());
         }
     }
+
 
 
     public void removeLayer(String soundName) {
