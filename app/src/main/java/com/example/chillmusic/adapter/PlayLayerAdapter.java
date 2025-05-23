@@ -125,9 +125,9 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgIcon;
-        TextView tvName;
-        SeekBar seekBar;
+        ImageView imgLayerIcon, btnEdit, btnDelete;
+        TextView tvLayerName;
+        SeekBar seekBarVolume;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgIcon = itemView.findViewById(R.id.imgLayerIcon);
