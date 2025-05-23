@@ -87,6 +87,18 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
         }
     }
 
+    public void addLayer(LayerSound layer) {
+        layers.add(layer);
+        notifyItemInserted(layers.size() - 1);
+
+
+        MediaPlayer player = MediaPlayer.create(context, layer.getSoundResId());
+        player.setLooping(true);
+        player.setVolume(layer.getVolume(), layer.getVolume());
+        player.start();
+        layer.setMediaPlayer(player);
+    }
+
     public void removeLayer(String soundName) {
         for (int i = 0; i < layers.size(); i++) {
             if (layers.get(i).getName().equals(soundName)) {
