@@ -238,14 +238,20 @@ public class OceanActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> customSoundLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    Intent data = result.getData();
-                    boolean remove = data.getBooleanExtra("remove", false);
-                    if (remove && !layers.isEmpty()) {
-                        LayerSound last = layers.get(layers.size() - 1);
-                        LayerAdapter.removeLayer(last);
-                        return;
-                    }
+                if (result.getResultCode() != RESULT_OK || result.getData() == null) {
+                    Log.d("OceanActivity", "❌ No data returned from CustomSoundPickerActivity");
+                    return;
+                }
+
+                Intent data = result.getData();
+
+                boolean remove = data.getBooleanExtra("remove", false);
+                if (remove && !layers.isEmpty()) {
+                    LayerSound last = layers.get(layers.size() - 1);
+                    LayerAdapter.removeLayer(last);
+                    Log.d("OceanActivity", "🗑 Removed last layer: " + last.getName());
+                    return;
+                }
 
                     long soundId = data.getLongExtra("soundId", -1);
                     long mixId = data.getLongExtra("mixId", -1);
