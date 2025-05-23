@@ -76,7 +76,7 @@ public class OceanActivity extends AppCompatActivity {
                     }
 
                 } else {
-                    android.util.Log.d("OceanActivity", "No layers to save.");
+                    Log.d("OceanActivity", "No layers to save.");
                 }
             }
         });
