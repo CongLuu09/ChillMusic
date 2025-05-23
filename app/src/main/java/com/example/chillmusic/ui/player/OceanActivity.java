@@ -59,6 +59,17 @@ public class OceanActivity extends AppCompatActivity {
 
         timerViewModel = new ViewModelProvider(this).get(TimerViewModel.class);
 
+        btnSaveSound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!layers.isEmpty()) {
+                    LayerSound lastLayer = layers.get(layers.size() - 1);
+                    AppDatabase dbHelper = new AppDatabase(OceanActivity.this);
+                    dbHelper.insertSound(lastLayer.getName(), lastLayer.getIconResId(), lastLayer.getSoundResId());
+                }
+            }
+        });
+
         setupListeners();
         setupLayerSounds();
         setupTimerObserver();
