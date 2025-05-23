@@ -44,6 +44,8 @@ public class AppDatabase extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SOUNDS);
         onCreate(db);
     }
+
+
     public void insertSound(String name, int iconResId, int soundResId) {
         if (isSoundExists(name)) return;
 
