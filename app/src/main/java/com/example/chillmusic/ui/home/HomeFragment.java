@@ -19,6 +19,7 @@ import com.example.chillmusic.adapter.SoundAdapter;
 import com.example.chillmusic.models.Sound;
 import com.example.chillmusic.ui.player.Forest.ForestActivity;
 import com.example.chillmusic.ui.player.OceanActivity;
+import com.example.chillmusic.ui.player.Rain.RainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class HomeFragment extends Fragment {
             } else if (sound.getTitle().equals("Forest")) {
                 startActivity(new Intent(getContext(), ForestActivity.class));
             } else if (sound.getTitle().equals("Rain")) {
-//                startActivity(new Intent(getContext(), RainActivity.class));
+                startActivity(new Intent(getContext(), RainActivity.class));
             } else if (sound.getTitle().equals("Night")) {
 //                startActivity(new Intent(getContext(), NightActivity.class));
             } else if (sound.getTitle().equals("Fire")) {
