@@ -53,4 +53,37 @@ public class AppDatabase extends SQLiteOpenHelper {
         db.insert(TABLE_SOUNDS, null, values);
         db.close();
     }
+
+
+    public boolean isSoundExists(String name) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_SOUNDS, null, COLUMN_NAME + "=?",
+                new String[]{name}, null, null, null);
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return exists;
+    }
+
+
+    public List<LayerSound> getAllSavedSounds() {
+        List<LayerSound> sounds = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_SOUNDS, null, null, null, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
+                int iconResId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ICON));
+                int soundResId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SOUND));
+
+                LayerSound layer = new LayerSound(iconResId, name, soundResId, null, 0.1f);
+                sounds.add(layer);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return sounds;
+    }
 }
