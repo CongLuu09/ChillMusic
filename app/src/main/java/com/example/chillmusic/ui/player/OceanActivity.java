@@ -9,13 +9,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +23,7 @@ import com.example.chillmusic.Timer.TimerDialog;
 import com.example.chillmusic.Timer.TimerViewModel;
 import com.example.chillmusic.adapter.PlayLayerAdapter;
 import com.example.chillmusic.data.db.AppDatabase;
+import com.example.chillmusic.data.db.entity.SoundEntity;
 import com.example.chillmusic.models.LayerSound;
 import com.example.chillmusic.ui.custom.CustomSoundPickerActivity;
 
@@ -47,7 +44,6 @@ public class OceanActivity extends AppCompatActivity {
     private TimerViewModel timerViewModel;
     private final Handler timerHandler = new Handler();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,24 +59,20 @@ public class OceanActivity extends AppCompatActivity {
 
         timerViewModel = new ViewModelProvider(this).get(TimerViewModel.class);
 
-        btnSaveSound.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!layers.isEmpty()) {
-                    AppDatabase dbHelper = new AppDatabase(OceanActivity.this);
+        btnSaveSound.setOnClickListener(v -> {
+            if (!layers.isEmpty()) {
+                AppDatabase db = new AppDatabase(this);
 
+                new Thread(() -> {
                     for (LayerSound layer : layers) {
-                        
-                        dbHelper.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId());
-                        Log.d("OceanActivity", "Saved sound: " + layer.getName());
+                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId());
+                        Log.d("OceanActivity", "✅ Saved sound to DB: " + layer.getName());
                     }
-
-                } else {
-                    Log.d("OceanActivity", "No layers to save.");
-                }
+                }).start();
+            } else {
+                Log.d("OceanActivity", "⚠️ No layers to save.");
             }
         });
-
 
         setupListeners();
         setupLayerSounds();
