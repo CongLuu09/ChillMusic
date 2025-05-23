@@ -23,8 +23,8 @@ public class AppDatabase extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public AppDatabase(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public static AppDatabase getInstance(OceanActivity oceanActivity) {
+        return new AppDatabase(oceanActivity.getApplicationContext());
     }
 
     @Override
