@@ -139,6 +139,15 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
     }
 
     public void addLayer(LayerSound layer) {
+
+        for (LayerSound l : layers) {
+            if (l.getName().equalsIgnoreCase(layer.getName())) {
+                Toast.makeText(context, "Đã tồn tại âm thanh \"" + layer.getName() + "\"", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+
         layers.add(layer);
         notifyItemInserted(layers.size() - 1);
 
