@@ -45,6 +45,8 @@ public class AppDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
     public void insertSound(String name, int iconResId, int soundResId) {
+        if (isSoundExists(name)) return;
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, name);
