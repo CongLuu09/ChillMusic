@@ -67,7 +67,7 @@ public class ForestActivity extends AppCompatActivity {
 
                 new Thread(() -> {
                     for (LayerSound layer : layers) {
-                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId());
+                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "forest");
                         Log.d("OceanActivity", "✅ Saved sound to DB: " + layer.getName());
                     }
                 }).start();
@@ -132,7 +132,7 @@ public class ForestActivity extends AppCompatActivity {
     private void loadSavedSoundsFromDb() {
         new Thread(() -> {
             AppDatabase db = new AppDatabase(this);
-            List<LayerSound> savedLayers = db.getAllSavedSounds();
+            List<LayerSound> savedLayers = db.getAllSavedSounds("forest");
 
             for (LayerSound l : savedLayers) {
                 MediaPlayer player = MediaPlayer.create(this, l.getSoundResId());

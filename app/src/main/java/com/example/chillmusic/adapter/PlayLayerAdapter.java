@@ -86,7 +86,7 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
                 String newName = input.getText().toString().trim();
                 if (!newName.isEmpty()) {
                     AppDatabase db = new AppDatabase(context);
-                    db.updateSoundName(layer.getName(), newName);
+                    db.updateSoundName(layer.getName(), newName, "");
                     layer.setName(newName);
                     notifyItemChanged(holder.getAdapterPosition());
                 }
@@ -105,7 +105,7 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
                     .setMessage("Bạn có chắc muốn xoá \"" + layer.getName() + "\" không?")
                     .setPositiveButton("Xoá", (dialog, which) -> {
                         AppDatabase db = new AppDatabase(context);
-                        db.deleteSoundByName(layer.getName());
+                        db.deleteSoundByName(layer.getName(), "");
 
                         releaseLayer(layer);
                         layers.remove(pos);
@@ -161,8 +161,8 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
 
 
         AppDatabase db = new AppDatabase(context);
-        if (!db.isSoundExists(layer.getName())) {
-            db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId());
+        if (!db.isSoundExists(layer.getName(), "")) {
+            db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "");
         }
     }
 
