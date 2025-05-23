@@ -52,6 +52,7 @@ public class OceanActivity extends AppCompatActivity {
 
         btnBack = findViewById(R.id.btnBack);
         btnPlayPause = findViewById(R.id.btnPlayPause);
+        btnSaveSound = findViewById(R.id.btnSaveSound);
         btnAddLayer = findViewById(R.id.btnAddLayer);
         tvTitle = findViewById(R.id.tvTitle);
         tvTimer = findViewById(R.id.tvTimer);
