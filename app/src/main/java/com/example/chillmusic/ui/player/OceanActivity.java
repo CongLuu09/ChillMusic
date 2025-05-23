@@ -222,6 +222,7 @@ public class OceanActivity extends AppCompatActivity {
         isPlaying = false;
         btnPlayPause.setImageResource(R.drawable.ic_pause);
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
