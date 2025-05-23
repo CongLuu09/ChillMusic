@@ -35,7 +35,6 @@ public class AppDatabase extends SQLiteOpenHelper {
                 COLUMN_ICON + " INTEGER, " +
                 COLUMN_SOUND + " INTEGER)";
         db.execSQL(CREATE_TABLE);
-
     }
 
 
