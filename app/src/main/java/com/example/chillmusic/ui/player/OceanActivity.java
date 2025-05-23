@@ -253,11 +253,11 @@ public class OceanActivity extends AppCompatActivity {
                     return;
                 }
 
-                    long soundId = data.getLongExtra("soundId", -1);
-                    long mixId = data.getLongExtra("mixId", -1);
-                    String name = data.getStringExtra("name");
-                    int icon = data.getIntExtra("iconResId", 0);
-                    int sound = data.getIntExtra("soundResId", 0);
+                long soundId = data.getLongExtra("soundId", -1);
+                long mixId = data.getLongExtra("mixId", -1);
+                String name = data.getStringExtra("name");
+                int icon = data.getIntExtra("iconResId", 0);
+                int sound = data.getIntExtra("soundResId", 0);
 
                     if (name != null && icon != 0 && sound != 0) {
                         LayerSound newLayer = new LayerSound(icon, name, sound, null, 0.1f);
