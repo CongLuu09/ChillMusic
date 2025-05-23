@@ -31,7 +31,7 @@ public class AppDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE " + TABLE_SOUNDS + " (" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_NAME + " TEXT, " +
+                COLUMN_NAME + " TEXT UNIQUE, " +
                 COLUMN_ICON + " INTEGER, " +
                 COLUMN_SOUND + " INTEGER)";
         db.execSQL(CREATE_TABLE);
