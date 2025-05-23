@@ -132,6 +132,27 @@ public class OceanActivity extends AppCompatActivity {
         LayerAdapter = new PlayLayerAdapter(this, layers);
         recyclerViewLayers.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewLayers.setAdapter(LayerAdapter);
+        loadSavedSoundsFromDb();
+    }
+
+    private void loadSavedSoundsFromDb() {
+        new Thread(() -> {
+            AppDatabase db = new AppDatabase(this);
+            List<LayerSound> savedLayers = db.getAllSavedSounds();
+
+            for (LayerSound l : savedLayers) {
+                MediaPlayer player = MediaPlayer.create(this, l.getSoundResId());
+                player.setLooping(true);
+                l.setMediaPlayer(player);
+            }
+
+            runOnUiThread(() -> {
+                layers.clear();
+                layers.addAll(savedLayers);
+                LayerAdapter.notifyDataSetChanged();
+                Log.d("OceanActivity", "✅ Loaded " + savedLayers.size() + " saved sounds from DB");
+            });
+        }).start();
     }
 
     private void setupListeners() {
