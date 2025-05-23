@@ -68,8 +68,13 @@ public class OceanActivity extends AppCompatActivity {
                 if (!layers.isEmpty()) {
                     LayerSound lastLayer = layers.get(layers.size() - 1);
                     AppDatabase dbHelper = new AppDatabase(OceanActivity.this);
-                    dbHelper.insertSound(lastLayer.getName(), lastLayer.getIconResId(), lastLayer.getSoundResId());
-                    android.util.Log.d("OceanActivity", "Saved sound: " + lastLayer.getName());
+
+                    for (LayerSound layer : layers) {
+                        
+                        dbHelper.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId());
+                        Log.d("OceanActivity", "Saved sound: " + layer.getName());
+                    }
+
                 } else {
                     android.util.Log.d("OceanActivity", "No layers to save.");
                 }
