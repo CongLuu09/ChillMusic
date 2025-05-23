@@ -60,7 +60,7 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
         MediaPlayer player = layer.getMediaPlayer();
 
 
-        holder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        holder.seekBarVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float volume = progress / 100f;
                 layer.setVolume(volume);
