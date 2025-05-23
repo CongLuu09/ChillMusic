@@ -130,9 +130,11 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
         SeekBar seekBarVolume;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgIcon = itemView.findViewById(R.id.imgLayerIcon);
-            tvName = itemView.findViewById(R.id.tvLayerName);
-            seekBar = itemView.findViewById(R.id.seekBarVolume);
+            imgLayerIcon = itemView.findViewById(R.id.imgLayerIcon);
+            tvLayerName = itemView.findViewById(R.id.tvLayerName);
+            seekBarVolume = itemView.findViewById(R.id.seekBarVolume);
+            btnEdit = itemView.findViewById(R.id.btnEdit);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
 
