@@ -18,6 +18,7 @@ import com.example.chillmusic.R;
 import com.example.chillmusic.adapter.SoundAdapter;
 import com.example.chillmusic.models.Sound;
 import com.example.chillmusic.ui.player.Forest.ForestActivity;
+import com.example.chillmusic.ui.player.Night.NightActivity;
 import com.example.chillmusic.ui.player.OceanActivity;
 import com.example.chillmusic.ui.player.Rain.RainActivity;
 
@@ -53,7 +54,7 @@ public class HomeFragment extends Fragment {
             } else if (sound.getTitle().equals("Rain")) {
                 startActivity(new Intent(getContext(), RainActivity.class));
             } else if (sound.getTitle().equals("Night")) {
-//                startActivity(new Intent(getContext(), NightActivity.class));
+                startActivity(new Intent(getContext(), NightActivity.class));
             } else if (sound.getTitle().equals("Fire")) {
 //                startActivity(new Intent(getContext(), FireActivity.class));
             } else if (sound.getTitle().equals("Lake")) {
