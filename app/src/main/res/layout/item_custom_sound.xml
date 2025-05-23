@@ -1,0 +1,43 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:gravity="center_horizontal"
+    android:background="?attr/selectableItemBackground">
+
+
+    <ImageView
+        android:id="@+id/img_sound_icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_heavy_rain"
+        android:contentDescription="@string/sound_icon"
+        android:layout_gravity="center_horizontal" />
+
+
+    <TextView
+        android:id="@+id/tv_sound_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Heavy Rain"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal" />
+
+
+    <SeekBar
+        android:id="@+id/seekBarVolume"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="100"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="2dp"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>

@@ -1,0 +1,60 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:text="Sleep Timer"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <Button android:id="@+id/btn5min" android:text="5 Minutes" style="@style/TimerButtonStyle"/>
+        <Button android:id="@+id/btn15min" android:text="15 Minutes" style="@style/TimerButtonStyle"/>
+        <Button android:id="@+id/btn30min" android:text="30 Minutes" style="@style/TimerButtonStyle"/>
+        <Button android:id="@+id/btn45min" android:text="45 Minutes" style="@style/TimerButtonStyle"/>
+
+
+        <Button android:id="@+id/btn1h" android:text="1 Hour" style="@style/TimerButtonStyle"/>
+        <Button android:id="@+id/btn1h30" android:text="1h 30min" style="@style/TimerButtonStyle"/>
+
+        <Button
+            android:id="@+id/btn2h"
+            style="@style/TimerButtonStyle"
+            android:text="2 Hours" />
+
+
+
+
+        <Button
+            android:id="@+id/btnCustom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Custom Time"
+            android:backgroundTint="#FFC107"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnCancelTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel Timer"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#F44336" />
+    </LinearLayout>
+</ScrollView>
