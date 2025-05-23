@@ -69,6 +69,9 @@ public class OceanActivity extends AppCompatActivity {
                     LayerSound lastLayer = layers.get(layers.size() - 1);
                     AppDatabase dbHelper = new AppDatabase(OceanActivity.this);
                     dbHelper.insertSound(lastLayer.getName(), lastLayer.getIconResId(), lastLayer.getSoundResId());
+                    android.util.Log.d("OceanActivity", "Saved sound: " + lastLayer.getName());
+                } else {
+                    android.util.Log.d("OceanActivity", "No layers to save.");
                 }
             }
         });
