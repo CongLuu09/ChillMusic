@@ -25,6 +25,7 @@ import com.example.chillmusic.Timer.TimerDialog;
 import com.example.chillmusic.Timer.TimerViewModel;
 import com.example.chillmusic.adapter.PlayLayerAdapter;
 import com.example.chillmusic.models.LayerSound;
+import com.example.chillmusic.ui.custom.CustomSoundPickerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -208,11 +209,11 @@ public class OceanActivity extends AppCompatActivity {
                     int sound = data.getIntExtra("soundResId", 0);
 
                     if (name != null && icon != 0 && sound != 0) {
-                        LayerSound newLayer = new LayerSound(icon, name, sound, 0.1f);
+                        LayerSound newLayer = new LayerSound(icon, name, sound, null, 0.1f);
                         MediaPlayer player = MediaPlayer.create(this, sound);
                         player.setLooping(true);
                         newLayer.setMediaPlayer(player);
-//                        LayerAdapter.addLayer(newLayer);
+                        LayerAdapter.addLayer(newLayer);
                     }
 
                 }

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chillmusic.R;
 import com.example.chillmusic.adapter.SoundAdapter;
 import com.example.chillmusic.models.Sound;
+import com.example.chillmusic.ui.player.OceanActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;

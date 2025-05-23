@@ -90,6 +90,19 @@
 
 
     <ImageView
+        android:id="@+id/btnSaveSound"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_play_button"
+        android:src="@drawable/ic_save"
+        android:scaleType="centerInside"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnPlayPause"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginEnd="16dp" />
+
+    <ImageView
         android:id="@+id/btnPlayPause"
         android:layout_width="80dp"
         android:layout_height="40dp"
@@ -98,7 +111,6 @@
         android:scaleType="centerInside"
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnSaveSound"
         app:layout_constraintEnd_toEndOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
