@@ -35,7 +35,7 @@ import java.util.Locale;
 
 public class OceanActivity extends AppCompatActivity {
 
-    private ImageView btnBack, btnPlayPause, btnAddLayer;
+    private ImageView btnBack, btnPlayPause, btnAddLayer, btnSaveSound;
     private TextView tvTitle, tvTimer;
     private RecyclerView recyclerViewLayers;
     private boolean isPlaying = false;
