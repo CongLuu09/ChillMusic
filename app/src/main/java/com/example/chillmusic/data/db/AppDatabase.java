@@ -60,16 +60,33 @@ public class AppDatabase extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deleteSoundByName(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_SOUNDS, COLUMN_NAME + "=?", new String[]{name});
+        db.close();
+    }
+
+    public void updateSoundName(String oldName, String newName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, newName);
+        db.update(TABLE_SOUNDS, values, COLUMN_NAME + "=?", new String[]{oldName});
+        db.close();
+    }
+
+
 
     public boolean isSoundExists(String name) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_SOUNDS, null, COLUMN_NAME + "=?",
                 new String[]{name}, null, null, null);
+
         boolean exists = cursor.moveToFirst();
         cursor.close();
         db.close();
         return exists;
     }
+
 
 
     public List<LayerSound> getAllSavedSounds() {

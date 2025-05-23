@@ -4,7 +4,7 @@ import android.media.MediaPlayer;
 
 public class LayerSound {
 
-    private final String name;
+    private String name;
     private final int iconResId;
     private final int soundResId;
     private float volume;
@@ -33,6 +33,10 @@ public class LayerSound {
     public String getName() {
         return name;
     }
+    public void setName(String name) {
+        this.name = name;
+    }
+
 
     public int getSoundResId() {
         return soundResId;
@@ -56,4 +60,13 @@ public class LayerSound {
                 ", mediaPlayer=" + mediaPlayer +
                 '}';
     }
+
+    public void release() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
 }

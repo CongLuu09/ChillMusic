@@ -151,13 +151,19 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
         layers.add(layer);
         notifyItemInserted(layers.size() - 1);
 
-
         MediaPlayer player = MediaPlayer.create(context, layer.getSoundResId());
         player.setLooping(true);
         player.setVolume(layer.getVolume(), layer.getVolume());
         player.start();
         layer.setMediaPlayer(player);
+
+
+        AppDatabase db = new AppDatabase(context);
+        if (!db.isSoundExists(layer.getName())) {
+            db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId());
+        }
     }
+
 
     public void removeLayer(String soundName) {
         for (int i = 0; i < layers.size(); i++) {
