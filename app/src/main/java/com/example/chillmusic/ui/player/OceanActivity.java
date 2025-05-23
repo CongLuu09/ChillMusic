@@ -121,14 +121,14 @@ public class OceanActivity extends AppCompatActivity {
             }
         });
 
-//        btnAddLayer.setOnClickListener(v -> {
-//            Intent intent = new Intent(this, CustomSoundPickerActivity.class);
-//            if (!layers.isEmpty()) {
-//                String currentSoundName = layers.get(layers.size() - 1).getName();
-//                intent.putExtra("selectedName", currentSoundName);
-//            }
-//            customSoundLauncher.launch(intent);
-//        });
+        btnAddLayer.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CustomSoundPickerActivity.class);
+            if (!layers.isEmpty()) {
+                String currentSoundName = layers.get(layers.size() - 1).getName();
+                intent.putExtra("selectedName", currentSoundName);
+            }
+            customSoundLauncher.launch(intent);
+        });
 
         tvTimer.setOnClickListener(v -> {
             TimerDialog dialog = TimerDialog.newInstance();
