@@ -142,14 +142,14 @@ public class CustomFragment extends Fragment {
 
         List<CustomSound> instrumentSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Instrument Sounds", instrumentSounds));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_piano, R.raw.piano, "Piano"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_guitar, R.raw.guitar, "Acoustic Guitar"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_violin, R.raw.violin, "Violin"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_flute, R.raw.flute, "Flute"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_drum, R.raw.drums, "Drum"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_saxophone, R.raw.saxophone, "Saxophone"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_harp, R.raw.harp, "Harp"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_clarinet, R.raw.clarinet, "Clarinet"));
+        instrumentSounds.add(new CustomSound(R.drawable.piano, R.raw.piano, "Piano"));
+        instrumentSounds.add(new CustomSound(R.drawable.acoustic_guitar, R.raw.guitar, "Acoustic Guitar"));
+        instrumentSounds.add(new CustomSound(R.drawable.violin, R.raw.violin, "Violin"));
+        instrumentSounds.add(new CustomSound(R.drawable.flute, R.raw.flute, "Flute"));
+        instrumentSounds.add(new CustomSound(R.drawable.drum, R.raw.drums, "Drum"));
+        instrumentSounds.add(new CustomSound(R.drawable.saxophone, R.raw.saxophone, "Saxophone"));
+        instrumentSounds.add(new CustomSound(R.drawable.harp, R.raw.harp, "Harp"));
+        instrumentSounds.add(new CustomSound(R.drawable.clarinet, R.raw.clarinet, "Clarinet"));
 
         List<CustomSound> animalSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Animal Sounds", animalSounds));
