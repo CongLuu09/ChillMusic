@@ -115,8 +115,8 @@ public class CustomFragment extends Fragment {
 
         List<CustomSound> fireSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Fire Sounds", fireSounds));
-        fireSounds.add(new CustomSound(R.drawable.ic_fire, R.raw.fire, "Crackling Fire"));
-        fireSounds.add(new CustomSound(R.drawable.ic_fireplace, R.raw.fireplace, "Fireplace Ambience"));
+        fireSounds.add(new CustomSound(R.drawable.crackling_fire, R.raw.fire, "Crackling Fire"));
+        fireSounds.add(new CustomSound(R.drawable.fireplace_ambience, R.raw.fireplace, "Fireplace Ambience"));
 
         List<CustomSound> citySounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("City Sounds", citySounds));
