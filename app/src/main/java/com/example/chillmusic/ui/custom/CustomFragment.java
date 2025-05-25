@@ -127,11 +127,11 @@ public class CustomFragment extends Fragment {
 
         List<CustomSound> Cafeandchill = new ArrayList<>();
         groups.add(new CustomSoundGroup("Cafe & Chill", Cafeandchill));
-        Cafeandchill.add(new CustomSound(R.drawable.ic_chill, R.raw.chill, "Cafe Music"));
-        Cafeandchill.add(new CustomSound(R.drawable.ic_chill_ambience, R.raw.chill_ambience, "Chill Ambience"));
-        Cafeandchill.add(new CustomSound(R.drawable.ic_chillnigh, R.raw.chillsound, "Chill Music"));
-        Cafeandchill.add(new CustomSound(R.drawable.ic_chillrelax, R.raw.pianochill, "Chill Relax"));
-        Cafeandchill.add(new CustomSound(R.drawable.ic_chillwork, R.raw.gitarchill, "Chill Music"));
+        Cafeandchill.add(new CustomSound(R.drawable.cafe_music, R.raw.chill, "Cafe Music"));
+        Cafeandchill.add(new CustomSound(R.drawable.chill_ambience, R.raw.chill_ambience, "Chill Ambience"));
+        Cafeandchill.add(new CustomSound(R.drawable.chillfeel, R.raw.chillsound, "Chill Music"));
+        Cafeandchill.add(new CustomSound(R.drawable.cafe_ambience, R.raw.pianochill, "Chill Relax"));
+        Cafeandchill.add(new CustomSound(R.drawable.cafe_background, R.raw.gitarchill, "Chill Music"));
 
         List<CustomSound> homeSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Home Sounds", homeSounds));
