@@ -153,14 +153,14 @@ public class CustomFragment extends Fragment {
 
         List<CustomSound> animalSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Animal Sounds", animalSounds));
-        animalSounds.add(new CustomSound(R.drawable.ic_dog, R.raw.dog_bark, "Dog Barking"));
-        animalSounds.add(new CustomSound(R.drawable.ic_cat, R.raw.cat_purring, "Cat Meowing"));
-        animalSounds.add(new CustomSound(R.drawable.ic_bird, R.raw.bird, "Bird Chirping"));
-        animalSounds.add(new CustomSound(R.drawable.ic_horse, R.raw.horse, "Horse Neigh"));
-        animalSounds.add(new CustomSound(R.drawable.ic_cow, R.raw.cow, "Cow Mooing"));
-        animalSounds.add(new CustomSound(R.drawable.ic_frog, R.raw.frog, "Frog Croaking"));
-        animalSounds.add(new CustomSound(R.drawable.ic_duck, R.raw.duck, "Duck Quack"));
-        animalSounds.add(new CustomSound(R.drawable.ic_cricket, R.raw.cricket, "Crickets Chirping"));
+        animalSounds.add(new CustomSound(R.drawable.dog_barking, R.raw.dog_bark, "Dog Barking"));
+        animalSounds.add(new CustomSound(R.drawable.cat_meowing, R.raw.cat_purring, "Cat Meowing"));
+        animalSounds.add(new CustomSound(R.drawable.bird_chirping, R.raw.bird, "Bird Chirping"));
+        animalSounds.add(new CustomSound(R.drawable.horse_neigh, R.raw.horse, "Horse Neigh"));
+        animalSounds.add(new CustomSound(R.drawable.cow_mooing, R.raw.cow, "Cow Mooing"));
+        animalSounds.add(new CustomSound(R.drawable.frog_croaking, R.raw.frog, "Frog Croaking"));
+        animalSounds.add(new CustomSound(R.drawable.duck_quack, R.raw.duck, "Duck Quack"));
+        animalSounds.add(new CustomSound(R.drawable.crickets_chirping, R.raw.cricket, "Crickets Chirping"));
 
         return groups;
     }
