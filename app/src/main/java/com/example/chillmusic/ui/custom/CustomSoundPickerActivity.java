@@ -48,9 +48,16 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
     }
 
     private void setupRecyclerView() {
-        adapter = new CustomSoundAdapter(this, getAllCustomSounds(), this);
-
-        recyclerViewCustomSounds.setLayoutManager(new GridLayoutManager(this, 3));
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        adapter = new CustomSoundAdapter(this, getMixedSoundItems(), this);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                int viewType = adapter.getItemViewType(position);
+                return viewType == CustomSoundAdapter.VIEW_TYPE_HEADER ? 3 : 1;
+            }
+        });
+        recyclerViewCustomSounds.setLayoutManager(layoutManager);
         recyclerViewCustomSounds.setAdapter(adapter);
     }
 
