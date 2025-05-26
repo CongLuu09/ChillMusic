@@ -59,6 +59,7 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         });
         recyclerViewCustomSounds.setLayoutManager(layoutManager);
         recyclerViewCustomSounds.setAdapter(adapter);
+
     }
 
     private List<SoundItem> getAllCustomSounds() {
