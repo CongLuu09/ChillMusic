@@ -196,7 +196,7 @@ public class NightActivity extends AppCompatActivity {
 
     private void playMainSound() {
         if (mainPlayer == null) {
-            mainPlayer = MediaPlayer.create(this, R.raw.forest);
+            mainPlayer = MediaPlayer.create(this, R.raw.main_night);
             mainPlayer.setLooping(true);
         }
         mainPlayer.start();
