@@ -159,7 +159,7 @@ public class CustomFragment extends Fragment {
         animalSounds.add(new CustomSound(R.drawable.horse_neigh, R.raw.horse, "Horse Neigh"));
         animalSounds.add(new CustomSound(R.drawable.cow_mooing, R.raw.cow, "Cow Mooing"));
         animalSounds.add(new CustomSound(R.drawable.frog_croaking, R.raw.frog, "Frog Croaking"));
-        animalSounds.add(new CustomSound(R.drawable.duck_quack, R.raw.duck, "Duck Quack"));
+        animalSounds.add(new CustomSound(R.drawable.duck_duack, R.raw.duck, "Duck Quack"));
         animalSounds.add(new CustomSound(R.drawable.crickets_chirping, R.raw.cricket, "Crickets Chirping"));
 
         return groups;

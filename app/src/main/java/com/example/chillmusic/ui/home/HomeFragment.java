@@ -24,6 +24,7 @@ import com.example.chillmusic.ui.player.Lake.LakeActivity;
 import com.example.chillmusic.ui.player.Night.NightActivity;
 import com.example.chillmusic.ui.player.OceanActivity;
 import com.example.chillmusic.ui.player.Rain.RainActivity;
+import com.example.chillmusic.ui.player.WaterFall.WaterfallActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +66,7 @@ public class HomeFragment extends Fragment {
             } else if (sound.getTitle().equals("Farm")) {
                 startActivity(new Intent(getContext(), FarmActivity.class));
             } else if (sound.getTitle().equals("Waterfall")) {
-//                startActivity(new Intent(getContext(), WaterfallActivity.class));
+                startActivity(new Intent(getContext(), WaterfallActivity.class));
             } else if (sound.getTitle().equals("Underwater")) {
 //                startActivity(new Intent(getContext(), UnderwaterActivity.class));
             } else if (sound.getTitle().equals("Desert")) {
