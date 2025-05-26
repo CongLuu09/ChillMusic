@@ -1,4 +1,4 @@
-package com.example.chillmusic.ui.player.Farm;
+package com.example.chillmusic.ui.player.Train;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -8,13 +8,9 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class FarmActivity extends AppCompatActivity {
+public class TrainJourneyActivity extends AppCompatActivity {
 
     private ImageView btnBack, btnPlayPause, btnAddLayer, btnSaveSound;
     private TextView tvTitle, tvTimer;
@@ -49,7 +45,7 @@ public class FarmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_farm);
+        setContentView(R.layout.activity_train_journey);
 
         btnBack = findViewById(R.id.btnBack);
         btnPlayPause = findViewById(R.id.btnPlayPause);
@@ -67,7 +63,7 @@ public class FarmActivity extends AppCompatActivity {
 
                 new Thread(() -> {
                     for (LayerSound layer : layers) {
-                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "farm");
+                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "train journey");
                         Log.d("LakeActivity", "✅ Saved sound to DB: " + layer.getName());
                     }
                 }).start();
@@ -111,7 +107,7 @@ public class FarmActivity extends AppCompatActivity {
     private void loadSavedSoundsFromDb() {
         new Thread(() -> {
             AppDatabase db = new AppDatabase(this);
-            List<LayerSound> savedLayers = db.getAllSavedSounds("farm");
+            List<LayerSound> savedLayers = db.getAllSavedSounds("train journey");
 
             for (LayerSound l : savedLayers) {
                 MediaPlayer player = MediaPlayer.create(this, l.getSoundResId());
@@ -175,7 +171,7 @@ public class FarmActivity extends AppCompatActivity {
 
     private void playMainSound() {
         if (mainPlayer == null) {
-            mainPlayer = MediaPlayer.create(this, R.raw.farm);
+            mainPlayer = MediaPlayer.create(this, R.raw.train);
             mainPlayer.setLooping(true);
         }
         mainPlayer.start();

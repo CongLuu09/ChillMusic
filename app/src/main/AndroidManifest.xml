@@ -13,6 +13,21 @@
         android:theme="@style/Theme.ChillMusic"
         tools:targetApi="31">
         <activity
+            android:name=".ui.player.Cafe.CafeChillActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.player.AirTravel.AirTravelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.player.Train.TrainJourneyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.player.Desert.DesertActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.player.Underwater.UnderwaterActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.player.WaterFall.WaterfallActivity"
             android:exported="false" />
         <activity

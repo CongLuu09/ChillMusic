@@ -1,4 +1,4 @@
-package com.example.chillmusic.ui.player.Farm;
+package com.example.chillmusic.ui.player.AirTravel;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class FarmActivity extends AppCompatActivity {
+public class AirTravelActivity extends AppCompatActivity {
 
     private ImageView btnBack, btnPlayPause, btnAddLayer, btnSaveSound;
     private TextView tvTitle, tvTimer;
@@ -49,7 +49,7 @@ public class FarmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_farm);
+        setContentView(R.layout.activity_air_travel);
 
         btnBack = findViewById(R.id.btnBack);
         btnPlayPause = findViewById(R.id.btnPlayPause);
@@ -67,7 +67,7 @@ public class FarmActivity extends AppCompatActivity {
 
                 new Thread(() -> {
                     for (LayerSound layer : layers) {
-                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "farm");
+                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "ari travel");
                         Log.d("LakeActivity", "✅ Saved sound to DB: " + layer.getName());
                     }
                 }).start();
@@ -111,7 +111,7 @@ public class FarmActivity extends AppCompatActivity {
     private void loadSavedSoundsFromDb() {
         new Thread(() -> {
             AppDatabase db = new AppDatabase(this);
-            List<LayerSound> savedLayers = db.getAllSavedSounds("farm");
+            List<LayerSound> savedLayers = db.getAllSavedSounds("air travel");
 
             for (LayerSound l : savedLayers) {
                 MediaPlayer player = MediaPlayer.create(this, l.getSoundResId());
@@ -175,7 +175,7 @@ public class FarmActivity extends AppCompatActivity {
 
     private void playMainSound() {
         if (mainPlayer == null) {
-            mainPlayer = MediaPlayer.create(this, R.raw.farm);
+            mainPlayer = MediaPlayer.create(this, R.raw.airplane);
             mainPlayer.setLooping(true);
         }
         mainPlayer.start();

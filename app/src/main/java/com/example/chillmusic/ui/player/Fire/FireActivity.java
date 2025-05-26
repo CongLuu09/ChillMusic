@@ -78,29 +78,8 @@ public class FireActivity extends AppCompatActivity {
         setupListeners();
         setupLayerSounds();
         setupTimerObserver();
-        enableSwipeToDelete();
     }
 
-    private void enableSwipeToDelete() {
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
-                if (position >= 0 && position < layers.size()) {
-                    LayerSound layer = layers.get(position);
-                    LayerAdapter.removeLayer(layer);
-                }
-            }
-        };
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerViewLayers);
-    }
 
     private void setupTimerObserver() {
         timerViewModel.getTimeLeftMillis().observe(this, timeLeft -> {

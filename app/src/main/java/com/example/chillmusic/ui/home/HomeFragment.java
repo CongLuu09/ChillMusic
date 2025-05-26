@@ -17,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chillmusic.R;
 import com.example.chillmusic.adapter.SoundAdapter;
 import com.example.chillmusic.models.Sound;
+import com.example.chillmusic.ui.player.AirTravel.AirTravelActivity;
+import com.example.chillmusic.ui.player.Cafe.CafeChillActivity;
+import com.example.chillmusic.ui.player.Desert.DesertActivity;
 import com.example.chillmusic.ui.player.Farm.FarmActivity;
 import com.example.chillmusic.ui.player.Fire.FireActivity;
 import com.example.chillmusic.ui.player.Forest.ForestActivity;
@@ -24,6 +27,8 @@ import com.example.chillmusic.ui.player.Lake.LakeActivity;
 import com.example.chillmusic.ui.player.Night.NightActivity;
 import com.example.chillmusic.ui.player.OceanActivity;
 import com.example.chillmusic.ui.player.Rain.RainActivity;
+import com.example.chillmusic.ui.player.Train.TrainJourneyActivity;
+import com.example.chillmusic.ui.player.Underwater.UnderwaterActivity;
 import com.example.chillmusic.ui.player.WaterFall.WaterfallActivity;
 
 import java.util.ArrayList;
@@ -68,15 +73,15 @@ public class HomeFragment extends Fragment {
             } else if (sound.getTitle().equals("Waterfall")) {
                 startActivity(new Intent(getContext(), WaterfallActivity.class));
             } else if (sound.getTitle().equals("Underwater")) {
-//                startActivity(new Intent(getContext(), UnderwaterActivity.class));
+                startActivity(new Intent(getContext(), UnderwaterActivity.class));
             } else if (sound.getTitle().equals("Desert")) {
-//                startActivity(new Intent(getContext(), DesertActivity.class));
+                startActivity(new Intent(getContext(), DesertActivity.class));
             } else if (sound.getTitle().equals("Train Journey")) {
-//                startActivity(new Intent(getContext(), TrainJourneyActivity.class));
+                startActivity(new Intent(getContext(), TrainJourneyActivity.class));
             } else if (sound.getTitle().equals("Air Travel")) {
-//                startActivity(new Intent(getContext(), AirTravelActivity.class));
+                startActivity(new Intent(getContext(), AirTravelActivity.class));
             } else if (sound.getTitle().equals("Cafe & Chill")) {
-//                startActivity(new Intent(getContext(), CafeChillActivity.class));
+                startActivity(new Intent(getContext(), CafeChillActivity.class));
             } else {
                 Toast.makeText(getContext(), "Clicked: " + sound.getImageResId(), Toast.LENGTH_SHORT).show();
             }

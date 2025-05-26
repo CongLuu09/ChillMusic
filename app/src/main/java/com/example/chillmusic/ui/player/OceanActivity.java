@@ -13,7 +13,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,7 +22,6 @@ import com.example.chillmusic.Timer.TimerDialog;
 import com.example.chillmusic.Timer.TimerViewModel;
 import com.example.chillmusic.adapter.PlayLayerAdapter;
 import com.example.chillmusic.data.db.AppDatabase;
-import com.example.chillmusic.data.db.entity.SoundEntity;
 import com.example.chillmusic.models.LayerSound;
 import com.example.chillmusic.ui.custom.CustomSoundPickerActivity;
 
@@ -77,28 +75,6 @@ public class OceanActivity extends AppCompatActivity {
         setupListeners();
         setupLayerSounds();
         setupTimerObserver();
-        enableSwipeToDelete();
-    }
-
-    private void enableSwipeToDelete() {
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
-                if (position >= 0 && position < layers.size()) {
-                    LayerSound layer = layers.get(position);
-                    LayerAdapter.removeLayer(layer);
-                }
-            }
-        };
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerViewLayers);
     }
 
     private void setupTimerObserver() {

@@ -18,6 +18,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import java.util.List;
 
 public class CustomSoundAdapter extends RecyclerView.Adapter<CustomSoundAdapter.ViewHolder> {
+
     public interface OnSoundClickListener {
         void onSoundClick(SoundItem item);
     }
