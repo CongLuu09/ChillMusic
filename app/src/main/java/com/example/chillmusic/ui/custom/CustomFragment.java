@@ -153,7 +153,7 @@ public class CustomFragment extends Fragment {
 
         List<CustomSound> animalSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Animal Sounds", animalSounds));
-        animalSounds.add(new CustomSound(R.drawable.dog_barking, R.raw.dog_bark, "Dog Barking"));
+        animalSounds.add(new CustomSound(R.drawable.dog_darking, R.raw.dog_bark, "Dog Barking"));
         animalSounds.add(new CustomSound(R.drawable.cat_meowing, R.raw.cat_purring, "Cat Meowing"));
         animalSounds.add(new CustomSound(R.drawable.bird_chirping, R.raw.bird, "Bird Chirping"));
         animalSounds.add(new CustomSound(R.drawable.horse_neigh, R.raw.horse, "Horse Neigh"));
