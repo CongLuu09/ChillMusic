@@ -34,6 +34,16 @@ import java.util.List;
 import java.util.Locale;
 
 public class WaterfallActivity extends AppCompatActivity {
+    private ImageView btnBack, btnPlayPause, btnAddLayer, btnSaveSound;
+    private TextView tvTitle, tvTimer;
+    private RecyclerView recyclerViewLayers;
+    private boolean isPlaying = false;
+    private MediaPlayer mainPlayer;
+    private final List<LayerSound> layers = new ArrayList<>();
+    private PlayLayerAdapter LayerAdapter;
+
+    private TimerViewModel timerViewModel;
+    private final Handler timerHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
