@@ -196,7 +196,7 @@ public class FarmActivity extends AppCompatActivity {
 
     private void playMainSound() {
         if (mainPlayer == null) {
-            mainPlayer = MediaPlayer.create(this, R.raw.forest);
+            mainPlayer = MediaPlayer.create(this, R.raw.farm);
             mainPlayer.setLooping(true);
         }
         mainPlayer.start();
