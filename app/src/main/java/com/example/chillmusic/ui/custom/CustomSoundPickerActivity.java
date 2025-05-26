@@ -71,14 +71,12 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
 
         List<CustomSound> rainSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Rain Sounds", rainSounds));
-        rainSounds.add(new CustomSound(R.drawable.ic_heavy_rain, R.raw.heavy_rain, "Heavy Rain"));
-        rainSounds.add(new CustomSound(R.drawable.ic_light_rain, R.raw.light_rain, "Light Rain"));
-        rainSounds.add(new CustomSound(R.drawable.ic_thunder, R.raw.thunder, "Storm"));
-        rainSounds.add(new CustomSound(R.drawable.ic_rain_tent, R.raw.rain_tent, "Rain on Tent"));
-        rainSounds.add(new CustomSound(R.drawable.ic_window, R.raw.rain_window, "Rain on Window"));
-        rainSounds.add(new CustomSound(R.drawable.ic_rain_forest, R.raw.rain_forest, "Rain in Forest"));
-
-
+        rainSounds.add(new CustomSound(R.drawable.heavy_rain, R.raw.heavy_rain, "Heavy Rain"));
+        rainSounds.add(new CustomSound(R.drawable.light_rain, R.raw.light_rain, "Light Rain"));
+        rainSounds.add(new CustomSound(R.drawable.storm, R.raw.thunder, "Storm"));
+        rainSounds.add(new CustomSound(R.drawable.rain_on_tent, R.raw.rain_tent, "Rain on Tent"));
+        rainSounds.add(new CustomSound(R.drawable.rain_on_window, R.raw.rain_window, "Rain on Window"));
+        rainSounds.add(new CustomSound(R.drawable.rain_in_forest, R.raw.rain_forest, "Rain in Forest"));
 
         List<CustomSound> natureSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Nature Sounds", natureSounds));
