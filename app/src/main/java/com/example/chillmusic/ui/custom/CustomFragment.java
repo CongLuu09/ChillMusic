@@ -120,10 +120,10 @@ public class CustomFragment extends Fragment {
 
         List<CustomSound> citySounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("City Sounds", citySounds));
-        citySounds.add(new CustomSound(R.drawable.ic_traffic, R.raw.traffic, "Traffic Noise"));
-        citySounds.add(new CustomSound(R.drawable.ic_cafe, R.raw.cafe, "Cafe Background"));
-        citySounds.add(new CustomSound(R.drawable.ic_train, R.raw.train, "Train Passing"));
-        citySounds.add(new CustomSound(R.drawable.ic_airplane, R.raw.airplane, "Airplane Flying"));
+        citySounds.add(new CustomSound(R.drawable.traffic_noise, R.raw.traffic, "Traffic Noise"));
+        citySounds.add(new CustomSound(R.drawable.cafe_background, R.raw.cafe, "Cafe Background"));
+        citySounds.add(new CustomSound(R.drawable.train_passing, R.raw.train, "Train Passing"));
+        citySounds.add(new CustomSound(R.drawable.airplane_flying, R.raw.airplane, "Airplane Flying"));
 
         List<CustomSound> Cafeandchill = new ArrayList<>();
         groups.add(new CustomSoundGroup("Cafe & Chill", Cafeandchill));
