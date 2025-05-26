@@ -80,15 +80,14 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
 
         List<CustomSound> natureSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Nature Sounds", natureSounds));
-        natureSounds.add(new CustomSound(R.drawable.ic_forest, R.raw.forest, "Forest Night"));
-        natureSounds.add(new CustomSound(R.drawable.ic_drip, R.raw.drip, "Ocean Waves"));
-        natureSounds.add(new CustomSound(R.drawable.ic_bird, R.raw.bird, "Birds Singing"));
-        natureSounds.add(new CustomSound(R.drawable.ic_frog, R.raw.frog, "Frogs Croaking"));
-        natureSounds.add(new CustomSound(R.drawable.ic_cricket, R.raw.cricket, "Crickets Chirping"));
-        natureSounds.add(new CustomSound(R.drawable.ic_wind, R.raw.wind, "Wind Blowing"));
-        natureSounds.add(new CustomSound(R.drawable.ic_snow, R.raw.snow, "Snow Falling"));
-        natureSounds.add(new CustomSound(R.drawable.ic_wave, R.raw.wave, "Ocean Waves"));
-
+        natureSounds.add(new CustomSound(R.drawable.forest_night, R.raw.forest, "Forest Night"));
+        natureSounds.add(new CustomSound(R.drawable.ocean_waves, R.raw.drip, "Ocean Waves"));
+        natureSounds.add(new CustomSound(R.drawable.birds_singing, R.raw.bird, "Birds Singing"));
+        natureSounds.add(new CustomSound(R.drawable.frog_croaking, R.raw.frog, "Frogs Croaking"));
+        natureSounds.add(new CustomSound(R.drawable.crickets_chirping, R.raw.cricket, "Crickets Chirping"));
+        natureSounds.add(new CustomSound(R.drawable.wind_blowing, R.raw.wind, "Wind Blowing"));
+        natureSounds.add(new CustomSound(R.drawable.snow_falling, R.raw.snow, "Snow Falling"));
+        natureSounds.add(new CustomSound(R.drawable.ocean_waves, R.raw.wave, "Ocean Waves"));
 
         List<CustomSound> fireSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Fire Sounds", fireSounds));
