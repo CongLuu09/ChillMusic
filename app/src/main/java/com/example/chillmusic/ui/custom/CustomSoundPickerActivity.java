@@ -68,7 +68,6 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
     private List<CustomSoundGroup> getCustomSoundList() {
         List<CustomSoundGroup> groups = new ArrayList<>();
 
-
         List<CustomSound> rainSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Rain Sounds", rainSounds));
         rainSounds.add(new CustomSound(R.drawable.heavy_rain, R.raw.heavy_rain, "Heavy Rain"));
@@ -118,26 +117,25 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
 
         List<CustomSound> instrumentSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Instrument Sounds", instrumentSounds));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_piano, R.raw.piano, "Piano"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_guitar, R.raw.guitar, "Acoustic Guitar"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_violin, R.raw.violin, "Violin"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_flute, R.raw.flute, "Flute"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_drum, R.raw.drums, "Drum"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_saxophone, R.raw.saxophone, "Saxophone"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_harp, R.raw.harp, "Harp"));
-        instrumentSounds.add(new CustomSound(R.drawable.ic_clarinet, R.raw.clarinet, "Clarinet"));
+        instrumentSounds.add(new CustomSound(R.drawable.piano, R.raw.piano, "Piano"));
+        instrumentSounds.add(new CustomSound(R.drawable.acoustic_guitar, R.raw.guitar, "Acoustic Guitar"));
+        instrumentSounds.add(new CustomSound(R.drawable.violin, R.raw.violin, "Violin"));
+        instrumentSounds.add(new CustomSound(R.drawable.flute, R.raw.flute, "Flute"));
+        instrumentSounds.add(new CustomSound(R.drawable.drum, R.raw.drums, "Drum"));
+        instrumentSounds.add(new CustomSound(R.drawable.saxophone, R.raw.saxophone, "Saxophone"));
+        instrumentSounds.add(new CustomSound(R.drawable.harp, R.raw.harp, "Harp"));
+        instrumentSounds.add(new CustomSound(R.drawable.clarinet, R.raw.clarinet, "Clarinet"));
 
         List<CustomSound> animalSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Animal Sounds", animalSounds));
-        animalSounds.add(new CustomSound(R.drawable.ic_dog, R.raw.dog_bark, "Dog Barking"));
-        animalSounds.add(new CustomSound(R.drawable.ic_cat, R.raw.cat_purring, "Cat Meowing"));
-        animalSounds.add(new CustomSound(R.drawable.ic_bird, R.raw.bird, "Bird Chirping"));
-        animalSounds.add(new CustomSound(R.drawable.ic_horse, R.raw.horse, "Horse Neigh"));
-        animalSounds.add(new CustomSound(R.drawable.ic_cow, R.raw.cow, "Cow Mooing"));
-        animalSounds.add(new CustomSound(R.drawable.ic_frog, R.raw.frog, "Frog Croaking"));
-        animalSounds.add(new CustomSound(R.drawable.ic_duck, R.raw.duck, "Duck Quack"));
-        animalSounds.add(new CustomSound(R.drawable.ic_cricket, R.raw.cricket, "Crickets Chirping"));
-
+        animalSounds.add(new CustomSound(R.drawable.dog_darking, R.raw.dog_bark, "Dog Barking"));
+        animalSounds.add(new CustomSound(R.drawable.cat_meowing, R.raw.cat_purring, "Cat Meowing"));
+        animalSounds.add(new CustomSound(R.drawable.bird_chirping, R.raw.bird, "Bird Chirping"));
+        animalSounds.add(new CustomSound(R.drawable.horse_neigh, R.raw.horse, "Horse Neigh"));
+        animalSounds.add(new CustomSound(R.drawable.cow_mooing, R.raw.cow, "Cow Mooing"));
+        animalSounds.add(new CustomSound(R.drawable.frog_croaking, R.raw.frog, "Frog Croaking"));
+        animalSounds.add(new CustomSound(R.drawable.duck_duack, R.raw.duck, "Duck Quack"));
+        animalSounds.add(new CustomSound(R.drawable.crickets_chirping, R.raw.cricket, "Crickets Chirping"));
 
         return groups;
     }
