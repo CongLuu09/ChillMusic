@@ -111,10 +111,10 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
 
         List<CustomSound> homeSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Home Sounds", homeSounds));
-        homeSounds.add(new CustomSound(R.drawable.ic_fan, R.raw.fan, "Fan Blowing"));
-        homeSounds.add(new CustomSound(R.drawable.ic_washer, R.raw.washing_machine, "Washing Machine"));
-        homeSounds.add(new CustomSound(R.drawable.ic_fridge, R.raw.fridge, "Fridge Humming"));
-        homeSounds.add(new CustomSound(R.drawable.ic_bowl, R.raw.bowl, "Dishwasher"));
+        homeSounds.add(new CustomSound(R.drawable.fan_blowing, R.raw.fan, "Fan Blowing"));
+        homeSounds.add(new CustomSound(R.drawable.washing_machine, R.raw.washing_machine, "Washing Machine"));
+        homeSounds.add(new CustomSound(R.drawable.fridge_humming, R.raw.fridge, "Fridge Humming"));
+        homeSounds.add(new CustomSound(R.drawable.dishwasher, R.raw.bowl, "Dishwasher"));
 
         List<CustomSound> instrumentSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Instrument Sounds", instrumentSounds));
