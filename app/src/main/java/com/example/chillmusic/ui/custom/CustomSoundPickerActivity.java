@@ -62,10 +62,10 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
 
     }
 
-    private List<SoundItem> getAllCustomSounds() {
-        List<SoundItem> allItems = new ArrayList<>();
+    private List<Object> getMixedSoundItems() {
+        List<Object> allItems = new ArrayList<>();
         for (CustomSoundGroup group : getCustomSoundList()) {
-
+            allItems.add(group.getGroupName());
             for (CustomSound sound : group.getSounds()) {
                 allItems.add(new SoundItem(sound.getImageResId(), false, sound.getTitle(), sound.getSoundResId()));
             }
