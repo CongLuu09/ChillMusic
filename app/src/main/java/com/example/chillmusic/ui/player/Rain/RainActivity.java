@@ -195,7 +195,7 @@ public class RainActivity extends AppCompatActivity {
 
     private void playMainSound() {
         if (mainPlayer == null) {
-            mainPlayer = MediaPlayer.create(this, R.raw.forest);
+            mainPlayer = MediaPlayer.create(this, R.raw.main_rain);
             mainPlayer.setLooping(true);
         }
         mainPlayer.start();
