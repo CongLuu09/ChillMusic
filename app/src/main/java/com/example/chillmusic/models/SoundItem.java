@@ -1,13 +1,16 @@
 package com.example.chillmusic.models;
 
 public class SoundItem {
+
+    private long id = -1;
     private String name;
     private int iconResId;
     private int soundResId;
     private boolean locked;
 
 
-    public SoundItem(int iconResId, boolean locked, String name, int soundResId) {
+    public SoundItem(long id, int iconResId, boolean locked, String name, int soundResId) {
+        this.id = id;
         this.iconResId = iconResId;
         this.locked = locked;
         this.name = name;
@@ -44,5 +47,13 @@ public class SoundItem {
 
     public void setSoundResId(int soundResId) {
         this.soundResId = soundResId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

@@ -110,7 +110,7 @@ public class CafeChillActivity extends AppCompatActivity {
     private void loadSavedSoundsFromDb() {
         new Thread(() -> {
             AppDatabase db = new AppDatabase(this);
-            List<LayerSound> savedLayers = db.getAllSavedSounds("cafe ");
+            List<LayerSound> savedLayers = db.getAllSavedSounds("cafe chill");
 
             for (LayerSound l : savedLayers) {
                 MediaPlayer player = MediaPlayer.create(this, l.getSoundResId());

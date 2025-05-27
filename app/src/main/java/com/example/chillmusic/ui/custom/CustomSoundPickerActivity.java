@@ -67,7 +67,14 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         for (CustomSoundGroup group : getCustomSoundList()) {
             allItems.add(group.getGroupName());
             for (CustomSound sound : group.getSounds()) {
-                allItems.add(new SoundItem(sound.getImageResId(), false, sound.getTitle(), sound.getSoundResId()));
+                allItems.add(new SoundItem(
+                        -1,
+                        sound.getImageResId(),
+                        false,
+                        sound.getTitle(),
+                        sound.getSoundResId()
+                ));
+
             }
         }
         return allItems;
@@ -154,7 +161,9 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         resultIntent.putExtra("name", item.getName());
         resultIntent.putExtra("iconResId", item.getIconResId());
         resultIntent.putExtra("soundResId", item.getSoundResId());
+        resultIntent.putExtra("soundId", item.getId());
         setResult(RESULT_OK, resultIntent);
         finish();
     }
+
 }

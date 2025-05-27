@@ -5,7 +5,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -56,21 +55,6 @@ public class OceanActivity extends AppCompatActivity {
         recyclerViewLayers = findViewById(R.id.recyclerViewLayers);
 
         timerViewModel = new ViewModelProvider(this).get(TimerViewModel.class);
-
-        btnSaveSound.setOnClickListener(v -> {
-            if (!layers.isEmpty()) {
-                AppDatabase db = new AppDatabase(this);
-
-                new Thread(() -> {
-                    for (LayerSound layer : layers) {
-                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "ocean");
-                        Log.d("OceanActivity", "✅ Saved sound to DB: " + layer.getName());
-                    }
-                }).start();
-            } else {
-                Log.d("OceanActivity", "⚠️ No layers to save.");
-            }
-        });
 
         setupListeners();
         setupLayerSounds();
@@ -233,6 +217,7 @@ public class OceanActivity extends AppCompatActivity {
                 }
 
                 LayerSound newLayer = new LayerSound(icon, name, sound, null, 0.1f);
+                newLayer.setId(soundId);
                 MediaPlayer player = MediaPlayer.create(this, sound);
                 player.setLooping(true);
                 newLayer.setMediaPlayer(player);

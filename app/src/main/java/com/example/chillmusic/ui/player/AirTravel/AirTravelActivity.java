@@ -67,7 +67,7 @@ public class AirTravelActivity extends AppCompatActivity {
 
                 new Thread(() -> {
                     for (LayerSound layer : layers) {
-                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "ari travel");
+                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "air travel");
                         Log.d("LakeActivity", "✅ Saved sound to DB: " + layer.getName());
                     }
                 }).start();

@@ -3,6 +3,7 @@ package com.example.chillmusic.models;
 import android.media.MediaPlayer;
 
 public class LayerSound {
+    private long id = -1;
 
     private String name;
     private final int iconResId;
@@ -16,6 +17,14 @@ public class LayerSound {
         this.soundResId = soundResId;
         this.mediaPlayer = mediaPlayer;
         this.volume = volume;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public int getIconResId() {
@@ -54,6 +63,7 @@ public class LayerSound {
     public String toString() {
         return "LayerSound{" +
                 "iconResId=" + iconResId +
+                ", id=" + id +
                 ", name='" + name + '\'' +
                 ", soundResId=" + soundResId +
                 ", volume=" + volume +
