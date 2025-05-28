@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.media.MediaPlayer;
 
 import com.example.chillmusic.models.LayerSound;
 
@@ -81,7 +82,7 @@ public class AppDatabase extends SQLiteOpenHelper {
                 int iconResId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ICON));
                 int soundResId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SOUND));
 
-                LayerSound layer = new LayerSound(iconResId, name, soundResId, null, 0.1f);
+                LayerSound layer = new LayerSound(iconResId, name, soundResId, (MediaPlayer) null, 0.1f);
                 sounds.add(layer);
             } while (cursor.moveToNext());
         }

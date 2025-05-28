@@ -2,14 +2,12 @@ package com.example.chillmusic.ui.custom;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,10 +15,17 @@ import com.example.chillmusic.R;
 import com.example.chillmusic.adapter.CustomSoundAdapter;
 import com.example.chillmusic.models.CustomSound;
 import com.example.chillmusic.models.CustomSoundGroup;
+import com.example.chillmusic.models.SoundDto;
 import com.example.chillmusic.models.SoundItem;
+import com.example.chillmusic.service.ApiService;
+import com.example.chillmusic.service.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CustomSoundPickerActivity extends AppCompatActivity implements CustomSoundAdapter.OnSoundClickListener {
 
@@ -28,7 +33,8 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
     private CustomSoundAdapter adapter;
     private ImageView btnClose;
     private TextView tvTitle;
-
+    private final List<Object> allItems = new ArrayList<>();
+    private final List<SoundDto> onlineSounds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,7 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
 
         setupRecyclerView();
         setupListeners();
+        fetchOnlineSounds();
     }
 
     private void setupListeners() {
@@ -49,7 +56,7 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
 
     private void setupRecyclerView() {
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
-        adapter = new CustomSoundAdapter(this, getMixedSoundItems(), this);
+        adapter = new CustomSoundAdapter(this, allItems, this);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -59,25 +66,58 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         });
         recyclerViewCustomSounds.setLayoutManager(layoutManager);
         recyclerViewCustomSounds.setAdapter(adapter);
-
     }
 
-    private List<Object> getMixedSoundItems() {
-        List<Object> allItems = new ArrayList<>();
-        for (CustomSoundGroup group : getCustomSoundList()) {
-            allItems.add(group.getGroupName());
-            for (CustomSound sound : group.getSounds()) {
-                allItems.add(new SoundItem(
-                        -1,
-                        sound.getImageResId(),
-                        false,
-                        sound.getTitle(),
-                        sound.getSoundResId()
-                ));
-
+    private void fetchOnlineSounds() {
+        ApiService api = RetrofitClient.getApiService();
+        api.getAllSounds().enqueue(new Callback<List<SoundDto>>() {
+            @Override
+            public void onResponse(Call<List<SoundDto>> call, Response<List<SoundDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    onlineSounds.clear();
+                    onlineSounds.addAll(response.body());
+                    updateCombinedSoundItems();
+                }
             }
+
+            @Override
+            public void onFailure(Call<List<SoundDto>> call, Throwable t) {
+                Log.e("API", "❌ Failed to fetch sounds from server", t);
+            }
+        });
+    }
+
+    private void updateCombinedSoundItems() {
+        allItems.clear();
+
+        if (!onlineSounds.isEmpty()) {
+            allItems.add("Online Sounds");
+
+            int[] fallbackIcons = {
+                    R.drawable.piano,
+                    R.drawable.acoustic_guitar,
+                    R.drawable.harp,
+                    R.drawable.chillfeel,
+                    R.drawable.ocean_waves,
+                    R.drawable.forest_night,
+                    R.drawable.cafe_music,
+                    R.drawable.frog_croaking
+            };
+            for (SoundDto dto : onlineSounds) {
+                allItems.add(new SoundItem(
+                        dto.getId(),
+                        0,  // iconResId = 0 nếu bạn dùng url để load ảnh
+                        true,
+                        dto.getName(),
+                        0,
+                        "http://10.0.2.2:5000" + dto.getFileUrl(),
+                        "http://10.0.2.2:5000" + dto.getIconUrl()  // truyền url icon riêng biệt
+                ));
+            }
+
         }
-        return allItems;
+
+        runOnUiThread(() -> adapter.notifyDataSetChanged());
     }
 
     private List<CustomSoundGroup> getCustomSoundList() {
@@ -155,13 +195,22 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         return groups;
     }
 
+
+
+
     @Override
     public void onSoundClick(SoundItem item) {
+        if (item == null) return;
+        returnResult(item);
+    }
+
+    private void returnResult(SoundItem item) {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("name", item.getName());
         resultIntent.putExtra("iconResId", item.getIconResId());
         resultIntent.putExtra("soundResId", item.getSoundResId());
         resultIntent.putExtra("soundId", item.getId());
+        resultIntent.putExtra("fileUrl", item.getFileUrl());
         setResult(RESULT_OK, resultIntent);
         finish();
     }

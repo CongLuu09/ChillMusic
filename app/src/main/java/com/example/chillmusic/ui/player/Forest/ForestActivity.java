@@ -1,6 +1,7 @@
 package com.example.chillmusic.ui.player.Forest;
 
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +30,7 @@ import com.example.chillmusic.data.db.AppDatabase;
 import com.example.chillmusic.models.LayerSound;
 import com.example.chillmusic.ui.custom.CustomSoundPickerActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -66,14 +68,14 @@ public class ForestActivity extends AppCompatActivity {
                 AppDatabase db = new AppDatabase(this);
 
                 new Thread(() -> {
-                    for (LayerSound layer : layers) {
+            for (LayerSound layer : layers) {
                         db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "forest");
                         Log.d("OceanActivity", "✅ Saved sound to DB: " + layer.getName());
-                    }
-                }).start();
-            } else {
-                Log.d("OceanActivity", "⚠️ No layers to save.");
             }
+                }).start();
+                    } else {
+                Log.d("OceanActivity", "⚠️ No layers to save.");
+                }
         });
 
         setupListeners();
@@ -207,6 +209,20 @@ public class ForestActivity extends AppCompatActivity {
             LayerAdapter.releaseAllPlayers();
         }
     }
+    private MediaPlayer createMediaPlayerFromUrl(String url) {
+        MediaPlayer player = new MediaPlayer();
+        try {
+            player.setDataSource(url);
+            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            player.setLooping(true);
+            player.setOnPreparedListener(MediaPlayer::start);
+            player.prepareAsync();
+        } catch (IOException e) {
+            Log.e("OceanActivity", "❌ Failed to load sound from URL: " + url, e);
+            return null;
+        }
+        return player;
+    }
 
     private final ActivityResultLauncher<Intent> customSoundLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -228,22 +244,25 @@ public class ForestActivity extends AppCompatActivity {
 
                 long soundId = data.getLongExtra("soundId", -1);
                 long mixId = data.getLongExtra("mixId", -1);
+                String fileUrl = data.getStringExtra("fileUrl");
                 String name = data.getStringExtra("name");
                 int icon = data.getIntExtra("iconResId", 0);
                 int sound = data.getIntExtra("soundResId", 0);
 
-                if (name == null || icon == 0 || sound == 0) {
+                if (name == null || icon == 0) {
                     Log.d("OceanActivity", "⚠️ Incomplete sound data received. Skipping layer creation.");
                     return;
                 }
 
-                LayerSound newLayer = new LayerSound(icon, name, sound, null, 0.1f);
-                MediaPlayer player = MediaPlayer.create(this, sound);
-                player.setLooping(true);
+                LayerSound newLayer = new LayerSound(icon, name, sound, fileUrl, 0.1f, null);
+                newLayer.setId(soundId);
+                MediaPlayer player = (fileUrl != null && !fileUrl.isEmpty()) ?
+                        createMediaPlayerFromUrl(fileUrl) : MediaPlayer.create(this, sound);
+
                 newLayer.setMediaPlayer(player);
 
-                LayerAdapter.addLayer(newLayer);
+                LayerAdapter.addLayer(newLayer, player);
                 Log.d("OceanActivity", "✅ Added new layer: " + name + " (soundId: " + soundId + ", mixId: " + mixId + ")");
             }
     );
-}
+    }

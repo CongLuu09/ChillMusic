@@ -2,14 +2,15 @@ package com.example.chillmusic.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import com.example.chillmusic.R;
 import com.example.chillmusic.data.db.AppDatabase;
 import com.example.chillmusic.models.LayerSound;
 
+import java.io.IOException;
 import java.util.List;
 
 public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.ViewHolder> {
@@ -49,18 +51,35 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
         holder.seekBarVolume.setProgress((int) (layer.getVolume() * 100));
 
 
-        if (layer.getMediaPlayer() == null) {
-            MediaPlayer player = MediaPlayer.create(context, layer.getSoundResId());
-            player.setLooping(true);
-            player.setVolume(layer.getVolume(), layer.getVolume());
-            player.start();
+        MediaPlayer player = layer.getMediaPlayer();
+        if (player == null) {
+            if (layer.getFileUrl() != null && !layer.getFileUrl().isEmpty()) {
+                player = new MediaPlayer();
+                try {
+                    player.setDataSource(layer.getFileUrl());
+                    player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    player.setLooping(true);
+                    player.setOnPreparedListener(mp -> mp.start());
+                    player.prepareAsync();
+                } catch (IOException e) {
+                    Log.e("PlayLayerAdapter", "Failed to create MediaPlayer from URL", e);
+                    player = null;
+                }
+            } else if (layer.getSoundResId() != 0) {
+                player = MediaPlayer.create(context, layer.getSoundResId());
+                if (player != null) {
+                    player.setLooping(true);
+                    player.setVolume(layer.getVolume(), layer.getVolume());
+                    player.start();
+                }
+            }
             layer.setMediaPlayer(player);
         }
 
-        MediaPlayer player = layer.getMediaPlayer();
 
 
         holder.seekBarVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            MediaPlayer player = layer.getMediaPlayer();
             @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float volume = progress / 100f;
                 layer.setVolume(volume);
@@ -138,8 +157,7 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
         }
     }
 
-    public void addLayer(LayerSound layer) {
-
+    public void addLayer(LayerSound layer, MediaPlayer player) {
         String newName = layer.getName().trim().toLowerCase();
         for (LayerSound l : layers) {
             if (l.getName().trim().toLowerCase().equals(newName)) {
@@ -148,23 +166,23 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
             }
         }
 
-
-
         layers.add(layer);
         notifyItemInserted(layers.size() - 1);
 
-        MediaPlayer player = MediaPlayer.create(context, layer.getSoundResId());
-        player.setLooping(true);
-        player.setVolume(layer.getVolume(), layer.getVolume());
-        player.start();
-        layer.setMediaPlayer(player);
-
+        if (player != null) {
+            player.setLooping(true);
+            player.setVolume(layer.getVolume(), layer.getVolume());
+            player.start();
+            layer.setMediaPlayer(player);
+        }
 
         AppDatabase db = new AppDatabase(context);
         if (!db.isSoundExists(layer.getName(), "")) {
             db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "");
         }
     }
+
+
 
 
 

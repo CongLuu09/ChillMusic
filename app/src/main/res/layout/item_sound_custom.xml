@@ -21,7 +21,8 @@
             android:layout_marginBottom="6dp"
             android:contentDescription="@string/app_name"
             android:scaleType="centerInside"
-            app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
+        app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
+
 
         <TextView
             android:id="@+id/tvLabel"

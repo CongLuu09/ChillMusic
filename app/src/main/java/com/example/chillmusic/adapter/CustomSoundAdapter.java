@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.chillmusic.R;
 import com.example.chillmusic.models.SoundItem;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -38,8 +39,7 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof String) return VIEW_TYPE_HEADER;
-        return VIEW_TYPE_ITEM;
+        return (items.get(position) instanceof String) ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
     }
 
     @NonNull
@@ -61,9 +61,34 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ((HeaderViewHolder) holder).tvGroupTitle.setText(groupName);
         } else {
             SoundItem item = (SoundItem) items.get(position);
-            ((ItemViewHolder) holder).tvLabel.setText(item.getName());
-            ((ItemViewHolder) holder).imgIcon.setImageResource(item.getIconResId());
-            ((ItemViewHolder) holder).imgLock.setVisibility(item.isLocked() ? View.VISIBLE : View.GONE);
+            ItemViewHolder viewHolder = (ItemViewHolder) holder;
+
+            viewHolder.tvLabel.setText(item.getName());
+
+            // 🔥 Dùng Glide để load ảnh từ URL thay vì iconResId
+            String baseUrl = "http://10.0.2.2:5000";
+
+            String imageToLoad = null;
+            if (item.getIconUrl() != null && !item.getIconUrl().isEmpty()) {
+                imageToLoad = baseUrl + item.getIconUrl();
+            } else if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+                imageToLoad = baseUrl + item.getImageUrl();
+            }
+
+            if (imageToLoad != null) {
+                Glide.with(context)
+                        .load(imageToLoad)
+                        //.placeholder(R.drawable.acoustic_guitar) // nếu muốn hiển thị tạm
+                        .into(viewHolder.imgIcon);
+            } else {
+                viewHolder.imgIcon.setImageDrawable(null);
+            }
+
+
+
+
+
+            viewHolder.imgLock.setVisibility(item.isLocked() ? View.VISIBLE : View.GONE);
 
             holder.itemView.setOnClickListener(v -> {
                 if (listener != null) {
@@ -72,6 +97,7 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             });
         }
     }
+
 
     @Override
     public int getItemCount() {
@@ -100,4 +126,3 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 }
-
