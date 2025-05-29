@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.chillmusic.R;
 import com.example.chillmusic.data.db.AppDatabase;
 import com.example.chillmusic.models.LayerSound;
@@ -47,9 +48,23 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
         LayerSound layer = layers.get(position);
 
         holder.tvLayerName.setText(layer.getName());
-        holder.imgLayerIcon.setImageResource(layer.getIconResId());
-        holder.seekBarVolume.setProgress((int) (layer.getVolume() * 100));
 
+        String imageUrl = layer.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_airplane) // ảnh khi đang load
+                    .error(R.drawable.ic_bird) // ảnh khi load lỗi
+                    .into(holder.imgLayerIcon);
+        } else {
+            if (layer.getIconResId() != 0) {
+                holder.imgLayerIcon.setImageResource(layer.getIconResId());
+            } else {
+                holder.imgLayerIcon.setImageDrawable(null);
+            }
+        }
+
+        holder.seekBarVolume.setProgress((int) (layer.getVolume() * 100));
 
         MediaPlayer player = layer.getMediaPlayer();
         if (player == null) {
@@ -59,7 +74,7 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
                     player.setDataSource(layer.getFileUrl());
                     player.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     player.setLooping(true);
-                    player.setOnPreparedListener(mp -> mp.start());
+                    player.setOnPreparedListener(MediaPlayer::start);
                     player.prepareAsync();
                 } catch (IOException e) {
                     Log.e("PlayLayerAdapter", "Failed to create MediaPlayer from URL", e);
@@ -76,11 +91,10 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
             layer.setMediaPlayer(player);
         }
 
-
-
         holder.seekBarVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             MediaPlayer player = layer.getMediaPlayer();
-            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float volume = progress / 100f;
                 layer.setVolume(volume);
                 if (player != null) {
@@ -134,8 +148,8 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
                     .show();
         });
 
-
     }
+
 
 
     @Override
