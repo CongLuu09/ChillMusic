@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,7 +33,7 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         void onSoundClick(SoundItem item);
     }
 
-    private final List<Object> items;
+    private final List<Object> items;  // Có thể là String (header) hoặc SoundItem (item)
     private final OnSoundClickListener listener;
     private final Context context;
 
@@ -72,18 +71,14 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             viewHolder.tvLabel.setText(item.getName());
 
-            // Base URL backend (thay nếu bạn dùng URL khác)
-            // Base URL backend (thay nếu bạn dùng URL khác)
-            String baseUrl = "http://10.0.2.2:5000";
-
+            // Xử lý URL ảnh
+            final String baseUrl = "http://10.0.2.2:5000";
             String imageUrl = item.getImageUrl();
-
             String imageToLoad = null;
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
-                    imageToLoad = imageUrl; // URL đầy đủ
+                    imageToLoad = imageUrl;
                 } else {
-                    // Thêm dấu / nếu thiếu
                     if (!imageUrl.startsWith("/")) {
                         imageUrl = "/" + imageUrl;
                     }
@@ -97,14 +92,14 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 String finalImageToLoad = imageToLoad;
                 Glide.with(context)
                         .load(imageToLoad)
-                        .placeholder(R.drawable.ic_airplane)  // Bạn cần có ảnh này trong drawable
-                        .error(R.drawable.ic_bird) // Ảnh khi lỗi load
+                        .placeholder(R.drawable.ic_airplane)  // ảnh placeholder khi loading
+                        .error(R.drawable.ic_bird)            // ảnh hiển thị khi lỗi
                         .listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model,
                                                         Target<Drawable> target, boolean isFirstResource) {
                                 Log.e("CustomSoundAdapter", "❌ Image load failed: " + finalImageToLoad, e);
-                                return false; // để Glide xử lý hiển thị error drawable
+                                return false; // để Glide xử lý hiển thị ảnh lỗi
                             }
 
                             @Override
@@ -119,10 +114,7 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 viewHolder.imgIcon.setImageDrawable(null);
             }
 
-
-
-
-
+            // Hiển thị biểu tượng khoá nếu item bị khoá
             viewHolder.imgLock.setVisibility(item.isLocked() ? View.VISIBLE : View.GONE);
 
             holder.itemView.setOnClickListener(v -> {
@@ -133,31 +125,26 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-
-
-
-
-
     @Override
     public int getItemCount() {
         return items.size();
     }
 
-    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
+    static class HeaderViewHolder extends RecyclerView.ViewHolder {
         TextView tvGroupTitle;
 
-        public HeaderViewHolder(@NonNull View itemView) {
+        HeaderViewHolder(@NonNull View itemView) {
             super(itemView);
             tvGroupTitle = itemView.findViewById(R.id.tv_group_title);
         }
     }
 
-    public static class ItemViewHolder extends RecyclerView.ViewHolder {
+    static class ItemViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView imgIcon;
         TextView tvLabel;
         ImageView imgLock;
 
-        public ItemViewHolder(@NonNull View itemView) {
+        ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             imgIcon = itemView.findViewById(R.id.imgIcon);
             tvLabel = itemView.findViewById(R.id.tvLabel);

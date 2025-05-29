@@ -21,7 +21,9 @@ import com.example.chillmusic.service.ApiService;
 import com.example.chillmusic.service.RetrofitClient;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -92,22 +94,26 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         String baseUrl = "http://10.0.2.2:5000/";
 
         if (!onlineSounds.isEmpty()) {
-            allItems.add("Online Sounds");
+            // Map category -> List<SoundItem>
+            Map<String, List<SoundItem>> groupedByCategory = new LinkedHashMap<>();
 
             for (SoundDto dto : onlineSounds) {
+                // Chuẩn hóa URL file âm thanh
                 String fullFileUrl = null;
                 if (dto.getFileUrl() != null) {
                     String fileUrl = dto.getFileUrl();
                     fullFileUrl = fileUrl.startsWith("/") ? baseUrl + fileUrl.substring(1) : baseUrl + fileUrl;
                 }
 
+                // Chuẩn hóa URL ảnh
                 String fullImageUrl = null;
                 if (dto.getImageUrl() != null) {
                     String imageUrl = dto.getImageUrl();
                     fullImageUrl = imageUrl.startsWith("/") ? baseUrl + imageUrl.substring(1) : baseUrl + imageUrl;
                 }
 
-                allItems.add(new SoundItem(
+                // Tạo SoundItem
+                SoundItem soundItem = new SoundItem(
                         dto.getId(),
                         0, // iconResId = 0 vì ảnh load từ URL
                         true,
@@ -115,12 +121,31 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
                         0,
                         fullFileUrl,
                         fullImageUrl
-                ));
+                );
+
+                // Lấy category, nếu null hoặc trống thì đặt category mặc định
+                String category = dto.getCategory();
+                if (category == null || category.isEmpty()) {
+                    category = "Others";
+                }
+
+                // Thêm vào map
+                if (!groupedByCategory.containsKey(category)) {
+                    groupedByCategory.put(category, new ArrayList<>());
+                }
+                groupedByCategory.get(category).add(soundItem);
+            }
+
+            // Chuyển map thành danh sách hỗn hợp có header (String) và item (SoundItem)
+            for (String category : groupedByCategory.keySet()) {
+                allItems.add(category);  // header là tên nhóm
+                allItems.addAll(groupedByCategory.get(category));
             }
         }
 
         runOnUiThread(() -> adapter.notifyDataSetChanged());
     }
+
 
 
     @Override
