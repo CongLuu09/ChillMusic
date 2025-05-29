@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
+    <!-- Background Image -->
     <ImageView
         android:id="@+id/imgBackground"
         android:layout_width="0dp"
@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
+    <!-- Back Button -->
     <ImageView
         android:id="@+id/btnBack"
         android:layout_width="24dp"
@@ -31,7 +31,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-
+    <!-- Title -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
@@ -48,6 +48,21 @@
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- RecyclerView Hiển Thị Danh Sách Mix đã lưu -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMixes"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Timer TextView -->
     <TextView
         android:id="@+id/tvTimer"
         android:layout_width="200dp"
@@ -57,12 +72,12 @@
         android:textSize="16sp"
         android:textColor="@android:color/white"
         android:background="@drawable/bg_hexagon_outline"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewMixes"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
+    <!-- Add Layer Button -->
     <ImageView
         android:id="@+id/btnAddLayer"
         android:layout_width="48dp"
@@ -75,7 +90,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
+    <!-- RecyclerView Danh sách Layers đang phát -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewLayers"
         android:layout_width="match_parent"
@@ -88,7 +103,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
+    <!-- Save Sound Button -->
     <ImageView
         android:id="@+id/btnSaveSound"
         android:layout_width="40dp"
@@ -102,6 +117,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginEnd="16dp" />
 
+    <!-- Play/Pause Button -->
     <ImageView
         android:id="@+id/btnPlayPause"
         android:layout_width="80dp"
@@ -113,4 +129,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnSaveSound"
         app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

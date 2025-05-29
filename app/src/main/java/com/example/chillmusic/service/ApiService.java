@@ -15,7 +15,6 @@ import retrofit2.http.*;
 
 public interface ApiService {
 
-    // 🔊 Lấy danh sách âm thanh
     @GET("/api/sounds")
     Call<List<SoundDto>> getAllSounds();
 
@@ -23,29 +22,21 @@ public interface ApiService {
     Call<List<SoundDto>> getSoundsByCategory(@Query("category") String category);
 
     @GET("/api/sounds")
-    Call<List<SoundDto>> getSoundsByIds(@Query("ids") String commaSeparatedIds); // "1,3,5"
+    Call<List<SoundDto>> getSoundsByIds(@Query("ids") String commaSeparatedIds);
 
-    // 💾 Lưu bản phối (Mix)
+    // Giữ 1 hàm POST cho tạo mix (trả về MixDto)
     @POST("/api/mix")
-    Call<MixDto> saveMix(@Body MixCreateRequest request);
+    Call<MixDto> createMix(@Body MixCreateRequest request);
 
-    @POST("/api/mix")
-    Call<Void> createMix(@Body MixCreateRequest request);
-
-
-    // 🔁 Lấy danh sách mix theo deviceId
     @GET("/api/mix")
     Call<List<MixDto>> getMixesByDevice(@Query("deviceId") String deviceId);
 
-    // 📝 Cập nhật mix
     @PUT("/api/mix/{id}")
     Call<MixDto> updateMix(@Path("id") int id, @Body MixUpdateRequest request);
 
-    // ❌ Xoá mix
     @DELETE("/api/mix/{id}")
     Call<Void> deleteMix(@Path("id") int id);
 
-    // ⬆️ Upload file ảnh + âm thanh
     @Multipart
     @POST("/api/upload")
     Call<UploadResponse> uploadSound(
@@ -57,5 +48,4 @@ public interface ApiService {
     @Multipart
     @POST("/api/upload/audio")
     Call<UploadResponse> uploadAudio(@Part MultipartBody.Part file);
-
 }

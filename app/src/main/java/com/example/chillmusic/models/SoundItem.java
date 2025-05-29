@@ -9,12 +9,18 @@ public class SoundItem {
     private int iconResId;
     private int soundResId;
     private boolean locked;
-    private String fileUrl;
-    private String imageUrl;
-    private String iconUrl;
 
-    // Constructor đầy đủ, có thêm tham số iconUrl
-    public SoundItem(long id, int iconResId, boolean locked, String name, int soundResId, String fileUrl, String imageUrl, String iconUrl) {
+    @SerializedName("fileSoundUrl")
+    private String fileUrl;
+
+    @SerializedName("fileImageUrl")
+    private String imageUrl;
+
+    public SoundItem(long id, int iconResId, boolean locked, String name, int soundResId) {
+        this(id, iconResId, locked, name, soundResId, null, null);
+    }
+
+    public SoundItem(long id, int iconResId, boolean locked, String name, int soundResId, String fileUrl, String imageUrl) {
         this.id = id;
         this.iconResId = iconResId;
         this.locked = locked;
@@ -22,70 +28,26 @@ public class SoundItem {
         this.soundResId = soundResId;
         this.fileUrl = fileUrl;
         this.imageUrl = imageUrl;
-        this.iconUrl = iconUrl;
     }
 
-    // Constructor cũ gọi lại constructor đầy đủ, iconUrl mặc định null
-    public SoundItem(long id, int iconResId, boolean locked, String name, int soundResId, String fileUrl, String imageUrl) {
-        this(id, iconResId, locked, name, soundResId, fileUrl, imageUrl, null);
-    }
+    public long getId() { return id; }
+    public void setId(long id) { this.id = id; }
 
-    // Getter và Setter cho tất cả biến
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public long getId() {
-        return id;
-    }
+    public int getIconResId() { return iconResId; }
+    public void setIconResId(int iconResId) { this.iconResId = iconResId; }
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    public int getSoundResId() { return soundResId; }
+    public void setSoundResId(int soundResId) { this.soundResId = soundResId; }
 
-    public String getName() {
-        return name;
-    }
+    public boolean isLocked() { return locked; }
+    public void setLocked(boolean locked) { this.locked = locked; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getFileUrl() { return fileUrl; }
+    public void setFileUrl(String fileUrl) { this.fileUrl = fileUrl; }
 
-    public int getIconResId() {
-        return iconResId;
-    }
-
-    public int getSoundResId() {
-        return soundResId;
-    }
-
-    public boolean isLocked() {
-        return locked;
-    }
-
-    public void setLocked(boolean locked) {
-        this.locked = locked;
-    }
-
-    public String getFileUrl() {
-        return fileUrl;
-    }
-
-    public void setFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-
-    public String getIconUrl() {
-        return iconUrl;
-    }
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
-    }
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 }
-

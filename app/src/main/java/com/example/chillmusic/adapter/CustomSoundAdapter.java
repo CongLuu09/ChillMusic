@@ -1,6 +1,8 @@
 package com.example.chillmusic.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +11,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.chillmusic.R;
 import com.example.chillmusic.models.SoundItem;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -65,20 +72,48 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             viewHolder.tvLabel.setText(item.getName());
 
-            // 🔥 Dùng Glide để load ảnh từ URL thay vì iconResId
+            // Base URL backend (thay nếu bạn dùng URL khác)
+            // Base URL backend (thay nếu bạn dùng URL khác)
             String baseUrl = "http://10.0.2.2:5000";
 
+            String imageUrl = item.getImageUrl();
+
             String imageToLoad = null;
-            if (item.getIconUrl() != null && !item.getIconUrl().isEmpty()) {
-                imageToLoad = baseUrl + item.getIconUrl();
-            } else if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
-                imageToLoad = baseUrl + item.getImageUrl();
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+                    imageToLoad = imageUrl; // URL đầy đủ
+                } else {
+                    // Thêm dấu / nếu thiếu
+                    if (!imageUrl.startsWith("/")) {
+                        imageUrl = "/" + imageUrl;
+                    }
+                    imageToLoad = baseUrl + imageUrl;
+                }
             }
 
+            Log.d("CustomSoundAdapter", "Loading image URL: " + imageToLoad);
+
             if (imageToLoad != null) {
+                String finalImageToLoad = imageToLoad;
                 Glide.with(context)
                         .load(imageToLoad)
-                        //.placeholder(R.drawable.acoustic_guitar) // nếu muốn hiển thị tạm
+                        .placeholder(R.drawable.ic_airplane)  // Bạn cần có ảnh này trong drawable
+                        .error(R.drawable.ic_bird) // Ảnh khi lỗi load
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                        Target<Drawable> target, boolean isFirstResource) {
+                                Log.e("CustomSoundAdapter", "❌ Image load failed: " + finalImageToLoad, e);
+                                return false; // để Glide xử lý hiển thị error drawable
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model,
+                                                           Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                Log.d("CustomSoundAdapter", "✅ Image loaded: " + finalImageToLoad);
+                                return false; // để Glide xử lý hiển thị ảnh
+                            }
+                        })
                         .into(viewHolder.imgIcon);
             } else {
                 viewHolder.imgIcon.setImageDrawable(null);
@@ -97,6 +132,10 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             });
         }
     }
+
+
+
+
 
 
     @Override
