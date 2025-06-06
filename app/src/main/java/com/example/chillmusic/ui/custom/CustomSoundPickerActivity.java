@@ -91,7 +91,7 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
 
     private void updateCombinedSoundItems() {
         allItems.clear();
-        String baseUrl = "http://10.0.2.2:5000/";
+        String baseUrl = "http://10.0.2.2:3000/";
 
         if (!onlineSounds.isEmpty()) {
             // Map category -> List<SoundItem>
