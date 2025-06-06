@@ -153,15 +153,107 @@ public class OceanActivity extends AppCompatActivity {
             // Xử lý hiển thị hoặc dùng savedMixes ở đây
             // Ví dụ: Log hoặc cập nhật UI
 
-            runOnUiThread(() -> {
-                // Ví dụ: Hiển thị danh sách mix hoặc tự động load mix đầu tiên
-                if (!savedMixes.isEmpty()) {
-                    MixDto firstMix = savedMixes.get(0);
-                    Log.d("OceanActivity", "Loaded saved mix: " + firstMix.getName());
-                    // Có thể bạn muốn load các sound từ mix này
+                    runOnUiThread(() -> {
+                        if (!filteredMixes.isEmpty()) {
+                            Log.d("OceanActivity", "Filtered mixes count: " + filteredMixes.size());
+
+                            MixDto newestMix = filteredMixes.get(0);
+
+                            // Chuyển List<Integer> sang List<Long>
+                            List<Long> soundIdsLong = new ArrayList<>();
+                            for (Integer id : newestMix.getSoundIds()) {
+                                soundIdsLong.add(id.longValue());
+                            }
+
+                            Log.d("OceanActivity", "Loading sounds by IDs: " + soundIdsLong);
+
+                            loadSoundsByIds(soundIdsLong, layerSounds -> {
+                                layers.clear();
+                                layers.addAll(layerSounds);
+                                LayerAdapter.notifyDataSetChanged();
+                            });
+
+                        } else {
+                            Log.d("OceanActivity", "No mixes matching prefix " + prefix);
+                        }
+                    });
+
+                } else {
+                    Log.e("API", "Response error: " + response.code());
                 }
-            });
-        }).start();
+            }
+
+            @Override
+            public void onFailure(Call<List<MixDto>> call, Throwable t) {
+                Log.e("API", "Call failed", t);
+            }
+        });
+    }
+
+
+    // Hàm loadSoundsByIds để lấy chi tiết sound từ backend
+    private void loadSoundsByIds(List<Long> ids, Consumer<List<LayerSound>> callback) {
+        if (ids == null || ids.isEmpty()) {
+            callback.accept(new ArrayList<>());
+            return;
+        }
+
+        // Tạo chuỗi id phân cách bằng dấu phẩy
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < ids.size(); i++) {
+            sb.append(ids.get(i));
+            if (i < ids.size() - 1) sb.append(",");
+        }
+        String commaSeparatedIds = sb.toString();
+
+        Log.d("OceanActivity", "Loading sounds by IDs: " + commaSeparatedIds);
+
+        ApiService api = RetrofitClient.getApiService();
+        api.getSoundsByIds(commaSeparatedIds).enqueue(new Callback<List<SoundDto>>() {
+            @Override
+            public void onResponse(Call<List<SoundDto>> call, Response<List<SoundDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("OceanActivity", "Sounds returned: " + response.body().size());
+                    List<LayerSound> layerSounds = new ArrayList<>();
+                    String baseUrl = "http://10.0.2.2:3000/";
+
+                    for (SoundDto dto : response.body()) {
+                        Log.d("OceanActivity", "SoundDto loaded: " + dto.getName() + ", id: " + dto.getId());
+
+                        String fullFileUrl = (dto.getFileUrl() != null && !dto.getFileUrl().isEmpty())
+                                ? (dto.getFileUrl().startsWith("http") ? dto.getFileUrl() : baseUrl + dto.getFileUrl())
+                                : null;
+
+                        String fullImageUrl = (dto.getImageUrl() != null && !dto.getImageUrl().isEmpty())
+                                ? (dto.getImageUrl().startsWith("http") ? dto.getImageUrl() : baseUrl + dto.getImageUrl())
+                                : null;
+
+                        LayerSound ls = new LayerSound(
+                                0,
+                                dto.getName(),
+                                0,
+                                fullFileUrl,
+                                0.1f,
+                                fullImageUrl
+                        );
+                        ls.setId(dto.getId());
+                        layerSounds.add(ls);
+                    }
+
+                    Log.d("OceanActivity", "LayerSounds count sent to adapter: " + layerSounds.size());
+                    callback.accept(layerSounds);
+                } else {
+                    Log.e("OceanActivity", "Error loading sounds by IDs: " + response.code());
+                    callback.accept(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SoundDto>> call, Throwable t) {
+                Log.e("OceanActivity", "Failed loading sounds by IDs", t);
+                callback.accept(new ArrayList<>());
+            }
+        });
     }
 
 
