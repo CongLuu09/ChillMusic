@@ -5,9 +5,11 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -24,8 +26,13 @@ import com.example.chillmusic.Timer.TimerViewModel;
 import com.example.chillmusic.adapter.PlayLayerAdapter;
 import com.example.chillmusic.data.db.AppDatabase;
 import com.example.chillmusic.models.LayerSound;
+import com.example.chillmusic.models.MixCreateRequest;
+import com.example.chillmusic.models.MixDto;
 import com.example.chillmusic.models.SoundDto;
+import com.example.chillmusic.service.ApiService;
+import com.example.chillmusic.service.RetrofitClient;
 import com.example.chillmusic.ui.custom.CustomSoundPickerActivity;
+import com.example.chillmusic.ui.player.Desert.DesertActivity;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -42,6 +49,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TrainJourneyActivity extends AppCompatActivity {
 
@@ -72,23 +83,195 @@ public class TrainJourneyActivity extends AppCompatActivity {
         timerViewModel = new ViewModelProvider(this).get(TimerViewModel.class);
 
         btnSaveSound.setOnClickListener(v -> {
-            if (!layers.isEmpty()) {
-                AppDatabase db = new AppDatabase(this);
-
-                new Thread(() -> {
-                    for (LayerSound layer : layers) {
-                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "train journey");
-                        Log.d("LakeActivity", "✅ Saved sound to DB: " + layer.getName());
-                    }
-                }).start();
-            } else {
-                Log.d("LakeActivity", "⚠️ No layers to save.");
+            // Thu thập các soundId hợp lệ từ layers đã chọn
+            List<Long> soundIds = new ArrayList<>();
+            for (LayerSound layer : layers) {
+                Log.d("OceanActivity", "Layer: " + layer.getName() + ", id=" + layer.getId());
+                if (layer.getId() != -1) {
+                    soundIds.add(layer.getId());
+                }
             }
+
+            // Nếu không có soundId hợp lệ thì thông báo và dừng
+            if (soundIds.isEmpty()) {
+                Log.d("OceanActivity", "⚠️ No valid sound IDs to save.");
+                Toast.makeText(TrainJourneyActivity.this, "Không có âm thanh hợp lệ để lưu.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Tạo tên mix theo timestamp
+            String mixName = "TrainMix_" + System.currentTimeMillis();
+
+            // Lấy deviceId thiết bị (ANDROID_ID)
+            String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+            // Tạo request gửi lên API
+            MixCreateRequest request = new MixCreateRequest(deviceId, mixName, soundIds);
+
+            // Gọi API lưu mix
+            ApiService api = RetrofitClient.getApiService();
+            api.createMix(request).enqueue(new Callback<MixDto>() {
+                @Override
+                public void onResponse(Call<MixDto> call, Response<MixDto> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        MixDto savedMix = response.body();
+
+                        // Lưu mix này vào database local
+                        new Thread(() -> {
+                            AppDatabase db = new AppDatabase(TrainJourneyActivity.this);
+                            db.insertMix(savedMix);
+                        }).start();
+
+                        runOnUiThread(() ->
+                                Toast.makeText(TrainJourneyActivity.this, "Lưu thành công!", Toast.LENGTH_SHORT).show()
+                        );
+                    } else {
+                        // Xử lý lỗi
+                    }
+                }
+
+
+                @Override
+                public void onFailure(Call<MixDto> call, Throwable t) {
+                    Log.e("OceanActivity", "❌ API error saving mix", t);
+                    runOnUiThread(() ->
+                            Toast.makeText(TrainJourneyActivity.this, "Lỗi khi lưu mix: " + t.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
+                }
+            });
+
         });
 
         setupListeners();
         setupLayerSounds();
         setupTimerObserver();
+        loadSavedMixesFromApi();
+    }
+
+
+    private void loadSavedMixesFromApi() {
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        ApiService api = RetrofitClient.getApiService();
+
+        api.getMixesByDevice(deviceId).enqueue(new Callback<List<MixDto>>() {
+            @Override
+            public void onResponse(Call<List<MixDto>> call, Response<List<MixDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<MixDto> mixList = response.body();
+
+                    // Lọc mix theo prefix tên activity
+                    String prefix = "TrainMix_";
+                    List<MixDto> filteredMixes = new ArrayList<>();
+                    for (MixDto mix : mixList) {
+                        if (mix.getName() != null && mix.getName().startsWith(prefix)) {
+                            filteredMixes.add(mix);
+                        }
+                    }
+
+                    // Sắp xếp filteredMixes theo createdAt giảm dần để lấy mix mới nhất
+                    filteredMixes.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
+
+                    runOnUiThread(() -> {
+                        if (!filteredMixes.isEmpty()) {
+                            Log.d("OceanActivity", "Filtered mixes count: " + filteredMixes.size());
+
+                            MixDto newestMix = filteredMixes.get(0);
+
+                            // Chuyển List<Integer> sang List<Long>
+                            List<Long> soundIdsLong = new ArrayList<>();
+                            for (Integer id : newestMix.getSoundIds()) {
+                                soundIdsLong.add(id.longValue());
+                            }
+
+                            Log.d("OceanActivity", "Loading sounds by IDs: " + soundIdsLong);
+
+                            loadSoundsByIds(soundIdsLong, layerSounds -> {
+                                layers.clear();
+                                layers.addAll(layerSounds);
+                                LayerAdapter.notifyDataSetChanged();
+                            });
+
+                        } else {
+                            Log.d("OceanActivity", "No mixes matching prefix " + prefix);
+                        }
+                    });
+
+                } else {
+                    Log.e("API", "Response error: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MixDto>> call, Throwable t) {
+                Log.e("API", "Call failed", t);
+            }
+        });
+    }
+
+
+    // Hàm loadSoundsByIds để lấy chi tiết sound từ backend
+    private void loadSoundsByIds(List<Long> ids, Consumer<List<LayerSound>> callback) {
+        if (ids == null || ids.isEmpty()) {
+            callback.accept(new ArrayList<>());
+            return;
+        }
+
+        // Tạo chuỗi id phân cách bằng dấu phẩy
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < ids.size(); i++) {
+            sb.append(ids.get(i));
+            if (i < ids.size() - 1) sb.append(",");
+        }
+        String commaSeparatedIds = sb.toString();
+
+        Log.d("OceanActivity", "Loading sounds by IDs: " + commaSeparatedIds);
+
+        ApiService api = RetrofitClient.getApiService();
+        api.getSoundsByIds(commaSeparatedIds).enqueue(new Callback<List<SoundDto>>() {
+            @Override
+            public void onResponse(Call<List<SoundDto>> call, Response<List<SoundDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("OceanActivity", "Sounds returned: " + response.body().size());
+                    List<LayerSound> layerSounds = new ArrayList<>();
+                    String baseUrl = "http://10.0.2.2:3000/";
+
+                    for (SoundDto dto : response.body()) {
+                        Log.d("OceanActivity", "SoundDto loaded: " + dto.getName() + ", id: " + dto.getId());
+
+                        String fullFileUrl = (dto.getFileUrl() != null && !dto.getFileUrl().isEmpty())
+                                ? (dto.getFileUrl().startsWith("http") ? dto.getFileUrl() : baseUrl + dto.getFileUrl())
+                                : null;
+
+                        String fullImageUrl = (dto.getImageUrl() != null && !dto.getImageUrl().isEmpty())
+                                ? (dto.getImageUrl().startsWith("http") ? dto.getImageUrl() : baseUrl + dto.getImageUrl())
+                                : null;
+
+                        LayerSound ls = new LayerSound(
+                                0,
+                                dto.getName(),
+                                0,
+                                fullFileUrl,
+                                0.1f,
+                                fullImageUrl
+                        );
+                        ls.setId(dto.getId());
+                        layerSounds.add(ls);
+                    }
+
+                    Log.d("OceanActivity", "LayerSounds count sent to adapter: " + layerSounds.size());
+                    callback.accept(layerSounds);
+                } else {
+                    Log.e("OceanActivity", "Error loading sounds by IDs: " + response.code());
+                    callback.accept(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SoundDto>> call, Throwable t) {
+                Log.e("OceanActivity", "Failed loading sounds by IDs", t);
+                callback.accept(new ArrayList<>());
+            }
+        });
     }
 
 
@@ -121,19 +304,26 @@ public class TrainJourneyActivity extends AppCompatActivity {
     private void loadSavedSoundsFromDb() {
         new Thread(() -> {
             AppDatabase db = new AppDatabase(this);
-            List<LayerSound> savedLayers = db.getAllSavedSounds("train journey");
+            List<LayerSound> savedLayers = db.getAllSavedSounds("train");
 
             for (LayerSound l : savedLayers) {
-                MediaPlayer player = MediaPlayer.create(this, l.getSoundResId());
-                player.setLooping(true);
-                l.setMediaPlayer(player);
+                MediaPlayer player;
+                if (l.getFileUrl() != null && !l.getFileUrl().isEmpty()) {
+                    player = createMediaPlayerFromUrl(l.getFileUrl());
+                } else {
+                    player = MediaPlayer.create(this, l.getSoundResId());
+                }
+                if (player != null) {
+                    player.setLooping(true);
+                    l.setMediaPlayer(player);
+                }
             }
 
             runOnUiThread(() -> {
                 layers.clear();
                 layers.addAll(savedLayers);
                 LayerAdapter.notifyDataSetChanged();
-                Log.d("LakeActivity", "✅ Loaded " + savedLayers.size() + " saved sounds from DB");
+                Log.d("OceanActivity", "✅ Loaded " + savedLayers.size() + " saved sounds from DB");
             });
         }).start();
     }
@@ -185,7 +375,7 @@ public class TrainJourneyActivity extends AppCompatActivity {
 
     private void playMainSound() {
         if (mainPlayer == null) {
-            mainPlayer = MediaPlayer.create(this, R.raw.train);
+            mainPlayer = MediaPlayer.create(this, R.raw.train); // Hoặc R.raw.forest tùy bạn
             mainPlayer.setLooping(true);
         }
         mainPlayer.start();
@@ -233,7 +423,7 @@ public class TrainJourneyActivity extends AppCompatActivity {
         return player;
     }
 
-    private final ActivityResultLauncher<Intent> customSoundLauncher = registerForActivityResult(
+    final ActivityResultLauncher<Intent> customSoundLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() != RESULT_OK || result.getData() == null) {
@@ -253,47 +443,31 @@ public class TrainJourneyActivity extends AppCompatActivity {
                 long soundId = data.getLongExtra("soundId", -1);
                 long mixId = data.getLongExtra("mixId", -1);
                 String fileUrl = data.getStringExtra("fileUrl");
-                String imageUrl = data.getStringExtra("imageUrl");
                 String name = data.getStringExtra("name");
                 int icon = data.getIntExtra("iconResId", 0);
                 int soundResId = data.getIntExtra("soundResId", 0);
+                String imageUrl = data.getStringExtra("imageUrl"); // Nhận thêm
 
-                if (name == null || icon == 0) {
+                Log.d("OceanActivity", "Received sound data: name=" + name + ", icon=" + icon + ", fileUrl=" + fileUrl + ", imageUrl=" + imageUrl + ", soundResId=" + soundResId);
+
+                // Sửa điều kiện kiểm tra hợp lệ:
+                if (name == null || (icon == 0 && (fileUrl == null || fileUrl.isEmpty()) && (imageUrl == null || imageUrl.isEmpty()))) {
                     Log.d("OceanActivity", "⚠️ Incomplete sound data received. Skipping layer creation.");
                     return;
                 }
 
-                // Nếu là âm thanh local chưa có fileUrl → convert và upload trước
-                if ((fileUrl == null || fileUrl.isEmpty()) && soundResId > 0) {
-                    File localFile = convertRawToFile(soundResId, name + ".mp3");
-                    if (localFile != null && localFile.exists()) {
-                        uploadSoundToApi(localFile, name, uploadedDto -> {
-                            runOnUiThread(() -> {
-                                LayerSound newLayer = new LayerSound(
-                                        icon,
-                                        uploadedDto.getName(),
-                                        -1,
-                                        "http://10.0.2.2:5000" + uploadedDto.getFileUrl(),
-                                        0.1f,
-                                        "http://10.0.2.2:5000" + uploadedDto.getImageUrl()
-                                );
-                                newLayer.setId(uploadedDto.getId());
+                // Nếu local chưa có fileUrl → convert & upload, xử lý tương tự cũ
 
-                                MediaPlayer player = createMediaPlayerFromUrl("http://10.0.2.2:5000" + uploadedDto.getFileUrl());
-                                newLayer.setMediaPlayer(player);
+                // Tạo LayerSound, ưu tiên dùng imageUrl để load icon
+                LayerSound newLayer = new LayerSound(
+                        icon,
+                        name,
+                        soundResId,
+                        fileUrl,
+                        0.1f,
+                        imageUrl
+                );
 
-                                LayerAdapter.addLayer(newLayer, player);
-                                Log.d("OceanActivity", "✅ Uploaded & added new layer (local): " + uploadedDto.getName());
-                            });
-                        });
-                    } else {
-                        Log.e("OceanActivity", "❌ Failed to convert raw resource to file");
-                    }
-                    return;
-                }
-
-                // Nếu là online sound hoặc local đã được upload → sử dụng trực tiếp
-                LayerSound newLayer = new LayerSound(icon, name, soundResId, fileUrl, 0.1f, null);
                 newLayer.setId(soundId);
 
                 MediaPlayer player;
@@ -302,21 +476,24 @@ public class TrainJourneyActivity extends AppCompatActivity {
                 } else if (soundResId != 0) {
                     player = MediaPlayer.create(this, soundResId);
                 } else {
-                    Log.e("OceanActivity", "❌ Invalid sound: no fileUrl or raw resource");
-                    return; // Dừng nếu cả 2 đều null
+                    player = null;
+                    Log.e("OceanActivity", "❌ No valid sound source");
                 }
 
                 newLayer.setMediaPlayer(player);
                 LayerAdapter.addLayer(newLayer, player);
+
                 Log.d("OceanActivity", "✅ Added new layer: " + name + " (soundId: " + soundId + ", mixId: " + mixId + ")");
             }
     );
+
+
 
     private void uploadSoundToApi(File file, String name, Consumer<SoundDto> onSuccess) {
         new Thread(() -> {
             try {
                 String boundary = "===" + System.currentTimeMillis() + "===";
-                URL url = new URL("http://10.0.2.2:5000/api/Sound/Upload"); // Đổi nếu URL khác
+                URL url = new URL("http://10.0.2.2:3000/api/Sound/Upload");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 connection.setRequestMethod("POST");
@@ -325,12 +502,12 @@ public class TrainJourneyActivity extends AppCompatActivity {
 
                 DataOutputStream output = new DataOutputStream(connection.getOutputStream());
 
-                // Field: name
+                // Phần name
                 output.writeBytes("--" + boundary + "\r\n");
                 output.writeBytes("Content-Disposition: form-data; name=\"name\"\r\n\r\n");
                 output.writeBytes(name + "\r\n");
 
-                // Field: file
+                // Phần file
                 output.writeBytes("--" + boundary + "\r\n");
                 output.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"\r\n");
                 output.writeBytes("Content-Type: audio/mpeg\r\n\r\n");
@@ -349,7 +526,6 @@ public class TrainJourneyActivity extends AppCompatActivity {
                 output.flush();
                 output.close();
 
-                // Nhận phản hồi
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -360,7 +536,6 @@ public class TrainJourneyActivity extends AppCompatActivity {
                     }
                     reader.close();
 
-                    // Giải mã JSON về SoundDto (giả định dùng Gson)
                     SoundDto dto = new Gson().fromJson(response.toString(), SoundDto.class);
                     onSuccess.accept(dto);
                 } else {
@@ -368,12 +543,10 @@ public class TrainJourneyActivity extends AppCompatActivity {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
                 Log.e("OceanActivity", "❌ Upload exception: ", e);
             }
         }).start();
     }
-
 
     private File convertRawToFile(int resId, String fileName) {
         try {
@@ -394,7 +567,6 @@ public class TrainJourneyActivity extends AppCompatActivity {
             Log.d("OceanActivity", "📁 File created: " + outFile.getAbsolutePath());
             return outFile;
         } catch (IOException e) {
-            e.printStackTrace();
             Log.e("OceanActivity", "❌ Error converting raw to file", e);
             return null;
         }

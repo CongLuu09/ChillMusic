@@ -112,29 +112,37 @@ public class OceanActivity extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null) {
                         MixDto savedMix = response.body();
 
-                        // Lưu mix này vào database local
+                        // Lưu mix này vào database local trong background thread
                         new Thread(() -> {
-                            AppDatabase db = new AppDatabase(OceanActivity.this);
-                            db.insertMix(savedMix);
+                            try {
+                                AppDatabase db = new AppDatabase(OceanActivity.this);
+                                db.insertMix(savedMix);
+                                Log.d("OceanActivity", "✅ Mix saved to local DB: " + savedMix.getName());
+                            } catch (Exception e) {
+                                Log.e("OceanActivity", "❌ Failed to save mix to DB", e);
+                            }
                         }).start();
 
                         runOnUiThread(() ->
-                                Toast.makeText(OceanActivity.this, "Lưu thành công!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(OceanActivity.this, "✅ Lưu thành công!", Toast.LENGTH_SHORT).show()
                         );
                     } else {
-                        // Xử lý lỗi
+                        Log.e("OceanActivity", "❌ API response error: " + response.code());
+                        runOnUiThread(() ->
+                                Toast.makeText(OceanActivity.this, "❌ Không lưu được (API error)", Toast.LENGTH_SHORT).show()
+                        );
                     }
                 }
 
-
                 @Override
                 public void onFailure(Call<MixDto> call, Throwable t) {
-                    Log.e("OceanActivity", "❌ API error saving mix", t);
+                    Log.e("OceanActivity", "❌ API call failed", t);
                     runOnUiThread(() ->
-                            Toast.makeText(OceanActivity.this, "Lỗi khi lưu mix: " + t.getMessage(), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(OceanActivity.this, "❌ Lỗi kết nối khi lưu mix", Toast.LENGTH_SHORT).show()
                     );
                 }
             });
+
 
         });
 
@@ -142,16 +150,31 @@ public class OceanActivity extends AppCompatActivity {
         setupListeners();
         setupLayerSounds();
         setupTimerObserver();
-        loadSavedMixes();
+
+        loadSavedMixesFromApi();
     }
 
-    private void loadSavedMixes() {
-        new Thread(() -> {
-            AppDatabase db = new AppDatabase(this);
-            List<MixDto> savedMixes = db.getAllMixes();
+    private void loadSavedMixesFromApi() {
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        ApiService api = RetrofitClient.getApiService();
 
-            // Xử lý hiển thị hoặc dùng savedMixes ở đây
-            // Ví dụ: Log hoặc cập nhật UI
+        api.getMixesByDevice(deviceId).enqueue(new Callback<List<MixDto>>() {
+            @Override
+            public void onResponse(Call<List<MixDto>> call, Response<List<MixDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<MixDto> mixList = response.body();
+
+                    // Lọc mix theo prefix tên activity
+                    String prefix = "OceanMix_";
+                    List<MixDto> filteredMixes = new ArrayList<>();
+                    for (MixDto mix : mixList) {
+                        if (mix.getName() != null && mix.getName().startsWith(prefix)) {
+                            filteredMixes.add(mix);
+                        }
+                    }
+
+                    // Sắp xếp filteredMixes theo createdAt giảm dần để lấy mix mới nhất
+                    filteredMixes.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
 
                     runOnUiThread(() -> {
                         if (!filteredMixes.isEmpty()) {
@@ -255,6 +278,8 @@ public class OceanActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
 
     private void setupTimerObserver() {
@@ -475,7 +500,7 @@ public class OceanActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 String boundary = "===" + System.currentTimeMillis() + "===";
-                URL url = new URL("http://10.0.2.2:5000/api/Sound/Upload");
+                URL url = new URL("http://10.0.2.2:3000/api/Sound/Upload");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 connection.setRequestMethod("POST");

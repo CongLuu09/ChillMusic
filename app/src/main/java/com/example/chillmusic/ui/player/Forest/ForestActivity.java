@@ -5,9 +5,11 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -28,12 +30,33 @@ import com.example.chillmusic.Timer.TimerViewModel;
 import com.example.chillmusic.adapter.PlayLayerAdapter;
 import com.example.chillmusic.data.db.AppDatabase;
 import com.example.chillmusic.models.LayerSound;
+import com.example.chillmusic.models.MixCreateRequest;
+import com.example.chillmusic.models.MixDto;
+import com.example.chillmusic.models.SoundDto;
+import com.example.chillmusic.service.ApiService;
+import com.example.chillmusic.service.RetrofitClient;
 import com.example.chillmusic.ui.custom.CustomSoundPickerActivity;
+import com.example.chillmusic.ui.player.OceanActivity;
+import com.google.gson.Gson;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ForestActivity extends AppCompatActivity {
     private ImageView btnBack, btnPlayPause, btnAddLayer, btnSaveSound;
@@ -64,23 +87,195 @@ public class ForestActivity extends AppCompatActivity {
         timerViewModel = new ViewModelProvider(this).get(TimerViewModel.class);
 
         btnSaveSound.setOnClickListener(v -> {
-            if (!layers.isEmpty()) {
-                AppDatabase db = new AppDatabase(this);
-
-                new Thread(() -> {
+            // Thu thập các soundId hợp lệ từ layers đã chọn
+            List<Long> soundIds = new ArrayList<>();
             for (LayerSound layer : layers) {
-                        db.insertSound(layer.getName(), layer.getIconResId(), layer.getSoundResId(), "forest");
-                        Log.d("OceanActivity", "✅ Saved sound to DB: " + layer.getName());
-            }
-                }).start();
-                    } else {
-                Log.d("OceanActivity", "⚠️ No layers to save.");
+                Log.d("OceanActivity", "Layer: " + layer.getName() + ", id=" + layer.getId());
+                if (layer.getId() != -1) {
+                    soundIds.add(layer.getId());
                 }
+            }
+
+            // Nếu không có soundId hợp lệ thì thông báo và dừng
+            if (soundIds.isEmpty()) {
+                Log.d("OceanActivity", "⚠️ No valid sound IDs to save.");
+                Toast.makeText(ForestActivity.this, "Không có âm thanh hợp lệ để lưu.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Tạo tên mix theo timestamp
+            String mixName = "ForestMix_" + System.currentTimeMillis();
+
+            // Lấy deviceId thiết bị (ANDROID_ID)
+            String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+            // Tạo request gửi lên API
+            MixCreateRequest request = new MixCreateRequest(deviceId, mixName, soundIds);
+
+            // Gọi API lưu mix
+            ApiService api = RetrofitClient.getApiService();
+            api.createMix(request).enqueue(new Callback<MixDto>() {
+                @Override
+                public void onResponse(Call<MixDto> call, Response<MixDto> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        MixDto savedMix = response.body();
+
+                        // Lưu mix này vào database local
+                        new Thread(() -> {
+                            AppDatabase db = new AppDatabase(ForestActivity.this);
+                            db.insertMix(savedMix);
+                        }).start();
+
+                        runOnUiThread(() ->
+                                Toast.makeText(ForestActivity.this, "Lưu thành công!", Toast.LENGTH_SHORT).show()
+                        );
+                    } else {
+                        // Xử lý lỗi
+                    }
+                }
+
+
+                @Override
+                public void onFailure(Call<MixDto> call, Throwable t) {
+                    Log.e("OceanActivity", "❌ API error saving mix", t);
+                    runOnUiThread(() ->
+                            Toast.makeText(ForestActivity.this, "Lỗi khi lưu mix: " + t.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
+                }
+            });
+
         });
 
         setupListeners();
         setupLayerSounds();
         setupTimerObserver();
+        loadSavedMixesFromApi();
+    }
+
+
+    private void loadSavedMixesFromApi() {
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        ApiService api = RetrofitClient.getApiService();
+
+        api.getMixesByDevice(deviceId).enqueue(new Callback<List<MixDto>>() {
+            @Override
+            public void onResponse(Call<List<MixDto>> call, Response<List<MixDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<MixDto> mixList = response.body();
+
+                    // Lọc mix theo prefix tên activity
+                    String prefix = "ForestMix_";
+                    List<MixDto> filteredMixes = new ArrayList<>();
+                    for (MixDto mix : mixList) {
+                        if (mix.getName() != null && mix.getName().startsWith(prefix)) {
+                            filteredMixes.add(mix);
+                        }
+                    }
+
+                    // Sắp xếp filteredMixes theo createdAt giảm dần để lấy mix mới nhất
+                    filteredMixes.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
+
+                    runOnUiThread(() -> {
+                        if (!filteredMixes.isEmpty()) {
+                            Log.d("OceanActivity", "Filtered mixes count: " + filteredMixes.size());
+
+                            MixDto newestMix = filteredMixes.get(0);
+
+                            // Chuyển List<Integer> sang List<Long>
+                            List<Long> soundIdsLong = new ArrayList<>();
+                            for (Integer id : newestMix.getSoundIds()) {
+                                soundIdsLong.add(id.longValue());
+                            }
+
+                            Log.d("OceanActivity", "Loading sounds by IDs: " + soundIdsLong);
+
+                            loadSoundsByIds(soundIdsLong, layerSounds -> {
+                                layers.clear();
+                                layers.addAll(layerSounds);
+                                LayerAdapter.notifyDataSetChanged();
+                            });
+
+                        } else {
+                            Log.d("OceanActivity", "No mixes matching prefix " + prefix);
+                        }
+                    });
+
+                } else {
+                    Log.e("API", "Response error: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MixDto>> call, Throwable t) {
+                Log.e("API", "Call failed", t);
+            }
+        });
+    }
+
+
+    // Hàm loadSoundsByIds để lấy chi tiết sound từ backend
+    private void loadSoundsByIds(List<Long> ids, Consumer<List<LayerSound>> callback) {
+        if (ids == null || ids.isEmpty()) {
+            callback.accept(new ArrayList<>());
+            return;
+        }
+
+        // Tạo chuỗi id phân cách bằng dấu phẩy
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < ids.size(); i++) {
+            sb.append(ids.get(i));
+            if (i < ids.size() - 1) sb.append(",");
+        }
+        String commaSeparatedIds = sb.toString();
+
+        Log.d("OceanActivity", "Loading sounds by IDs: " + commaSeparatedIds);
+
+        ApiService api = RetrofitClient.getApiService();
+        api.getSoundsByIds(commaSeparatedIds).enqueue(new Callback<List<SoundDto>>() {
+            @Override
+            public void onResponse(Call<List<SoundDto>> call, Response<List<SoundDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("OceanActivity", "Sounds returned: " + response.body().size());
+                    List<LayerSound> layerSounds = new ArrayList<>();
+                    String baseUrl = "http://10.0.2.2:3000/";
+
+                    for (SoundDto dto : response.body()) {
+                        Log.d("OceanActivity", "SoundDto loaded: " + dto.getName() + ", id: " + dto.getId());
+
+                        String fullFileUrl = (dto.getFileUrl() != null && !dto.getFileUrl().isEmpty())
+                                ? (dto.getFileUrl().startsWith("http") ? dto.getFileUrl() : baseUrl + dto.getFileUrl())
+                                : null;
+
+                        String fullImageUrl = (dto.getImageUrl() != null && !dto.getImageUrl().isEmpty())
+                                ? (dto.getImageUrl().startsWith("http") ? dto.getImageUrl() : baseUrl + dto.getImageUrl())
+                                : null;
+
+                        LayerSound ls = new LayerSound(
+                                0,
+                                dto.getName(),
+                                0,
+                                fullFileUrl,
+                                0.1f,
+                                fullImageUrl
+                        );
+                        ls.setId(dto.getId());
+                        layerSounds.add(ls);
+                    }
+
+                    Log.d("OceanActivity", "LayerSounds count sent to adapter: " + layerSounds.size());
+                    callback.accept(layerSounds);
+                } else {
+                    Log.e("OceanActivity", "Error loading sounds by IDs: " + response.code());
+                    callback.accept(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SoundDto>> call, Throwable t) {
+                Log.e("OceanActivity", "Failed loading sounds by IDs", t);
+                callback.accept(new ArrayList<>());
+            }
+        });
     }
 
 
@@ -116,9 +311,16 @@ public class ForestActivity extends AppCompatActivity {
             List<LayerSound> savedLayers = db.getAllSavedSounds("forest");
 
             for (LayerSound l : savedLayers) {
-                MediaPlayer player = MediaPlayer.create(this, l.getSoundResId());
-                player.setLooping(true);
-                l.setMediaPlayer(player);
+                MediaPlayer player;
+                if (l.getFileUrl() != null && !l.getFileUrl().isEmpty()) {
+                    player = createMediaPlayerFromUrl(l.getFileUrl());
+                } else {
+                    player = MediaPlayer.create(this, l.getSoundResId());
+                }
+                if (player != null) {
+                    player.setLooping(true);
+                    l.setMediaPlayer(player);
+                }
             }
 
             runOnUiThread(() -> {
@@ -177,7 +379,7 @@ public class ForestActivity extends AppCompatActivity {
 
     private void playMainSound() {
         if (mainPlayer == null) {
-            mainPlayer = MediaPlayer.create(this, R.raw.forest);
+            mainPlayer = MediaPlayer.create(this, R.raw.main_forest); // Hoặc R.raw.forest tùy bạn
             mainPlayer.setLooping(true);
         }
         mainPlayer.start();
@@ -209,6 +411,7 @@ public class ForestActivity extends AppCompatActivity {
             LayerAdapter.releaseAllPlayers();
         }
     }
+
     private MediaPlayer createMediaPlayerFromUrl(String url) {
         MediaPlayer player = new MediaPlayer();
         try {
@@ -224,7 +427,7 @@ public class ForestActivity extends AppCompatActivity {
         return player;
     }
 
-    private final ActivityResultLauncher<Intent> customSoundLauncher = registerForActivityResult(
+    final ActivityResultLauncher<Intent> customSoundLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() != RESULT_OK || result.getData() == null) {
@@ -233,7 +436,6 @@ public class ForestActivity extends AppCompatActivity {
                 }
 
                 Intent data = result.getData();
-
                 boolean remove = data.getBooleanExtra("remove", false);
                 if (remove && !layers.isEmpty()) {
                     LayerSound last = layers.get(layers.size() - 1);
@@ -247,22 +449,130 @@ public class ForestActivity extends AppCompatActivity {
                 String fileUrl = data.getStringExtra("fileUrl");
                 String name = data.getStringExtra("name");
                 int icon = data.getIntExtra("iconResId", 0);
-                int sound = data.getIntExtra("soundResId", 0);
+                int soundResId = data.getIntExtra("soundResId", 0);
+                String imageUrl = data.getStringExtra("imageUrl"); // Nhận thêm
 
-                if (name == null || icon == 0) {
+                Log.d("OceanActivity", "Received sound data: name=" + name + ", icon=" + icon + ", fileUrl=" + fileUrl + ", imageUrl=" + imageUrl + ", soundResId=" + soundResId);
+
+                // Sửa điều kiện kiểm tra hợp lệ:
+                if (name == null || (icon == 0 && (fileUrl == null || fileUrl.isEmpty()) && (imageUrl == null || imageUrl.isEmpty()))) {
                     Log.d("OceanActivity", "⚠️ Incomplete sound data received. Skipping layer creation.");
                     return;
                 }
 
-                LayerSound newLayer = new LayerSound(icon, name, sound, fileUrl, 0.1f, null);
+                // Nếu local chưa có fileUrl → convert & upload, xử lý tương tự cũ
+
+                // Tạo LayerSound, ưu tiên dùng imageUrl để load icon
+                LayerSound newLayer = new LayerSound(
+                        icon,
+                        name,
+                        soundResId,
+                        fileUrl,
+                        0.1f,
+                        imageUrl
+                );
+
                 newLayer.setId(soundId);
-                MediaPlayer player = (fileUrl != null && !fileUrl.isEmpty()) ?
-                        createMediaPlayerFromUrl(fileUrl) : MediaPlayer.create(this, sound);
+
+                MediaPlayer player;
+                if (fileUrl != null && !fileUrl.isEmpty()) {
+                    player = createMediaPlayerFromUrl(fileUrl);
+                } else if (soundResId != 0) {
+                    player = MediaPlayer.create(this, soundResId);
+                } else {
+                    player = null;
+                    Log.e("OceanActivity", "❌ No valid sound source");
+                }
 
                 newLayer.setMediaPlayer(player);
-
                 LayerAdapter.addLayer(newLayer, player);
+
                 Log.d("OceanActivity", "✅ Added new layer: " + name + " (soundId: " + soundId + ", mixId: " + mixId + ")");
             }
     );
+
+
+
+    private void uploadSoundToApi(File file, String name, Consumer<SoundDto> onSuccess) {
+        new Thread(() -> {
+            try {
+                String boundary = "===" + System.currentTimeMillis() + "===";
+                URL url = new URL("http://10.0.2.2:3000/api/Sound/Upload");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+                connection.setDoOutput(true);
+
+                DataOutputStream output = new DataOutputStream(connection.getOutputStream());
+
+                // Phần name
+                output.writeBytes("--" + boundary + "\r\n");
+                output.writeBytes("Content-Disposition: form-data; name=\"name\"\r\n\r\n");
+                output.writeBytes(name + "\r\n");
+
+                // Phần file
+                output.writeBytes("--" + boundary + "\r\n");
+                output.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"\r\n");
+                output.writeBytes("Content-Type: audio/mpeg\r\n\r\n");
+
+                FileInputStream fileInput = new FileInputStream(file);
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = fileInput.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                }
+                output.writeBytes("\r\n");
+                fileInput.close();
+
+                // Kết thúc multipart
+                output.writeBytes("--" + boundary + "--\r\n");
+                output.flush();
+                output.close();
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+
+                    SoundDto dto = new Gson().fromJson(response.toString(), SoundDto.class);
+                    onSuccess.accept(dto);
+                } else {
+                    Log.e("OceanActivity", "❌ Upload failed. Response code: " + responseCode);
+                }
+
+            } catch (Exception e) {
+                Log.e("OceanActivity", "❌ Upload exception: ", e);
+            }
+        }).start();
     }
+
+    private File convertRawToFile(int resId, String fileName) {
+        try {
+            InputStream inputStream = getResources().openRawResource(resId);
+            File outFile = new File(getCacheDir(), fileName);
+
+            FileOutputStream outputStream = new FileOutputStream(outFile);
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            outputStream.close();
+
+            Log.d("OceanActivity", "📁 File created: " + outFile.getAbsolutePath());
+            return outFile;
+        } catch (IOException e) {
+            Log.e("OceanActivity", "❌ Error converting raw to file", e);
+            return null;
+        }
+    }
+}
