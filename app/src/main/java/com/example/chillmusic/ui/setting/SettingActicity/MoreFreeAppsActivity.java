@@ -38,11 +38,18 @@ public class MoreFreeAppsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         List<FreeApp> apps = Arrays.asList(
-                new FreeApp("Alarm Clock", "Trouble waking up in the morning? Try this.", R.drawable.ic_alarm, "https://play.google.com/store/apps/details?id=com.example.alarm"),
-                new FreeApp("Lullaby", "Baby lullaby, baby sleeping music is a free offline...", R.drawable.ic_lullaby, "https://play.google.com/store/apps/details?id=com.example.lullaby"),
-                new FreeApp("Binaural Beats", "Free study music and binaural beats app...", R.drawable.ic_brainwave, "https://play.google.com/store/apps/details?id=com.example.brainwave"),
-                new FreeApp("Meditation Music", "Meditation Music app contains 17 different free...", R.drawable.ic_meditation, "https://play.google.com/store/apps/details?id=com.example.meditation")
+                new FreeApp("Rainy Mood", "Relax with authentic rain ambiance for better sleep.", R.drawable.light_rain, "https://play.google.com/store/apps/details?id=com.example.rainymood"),
+                new FreeApp("Ocean Waves", "Sleep to the calming sound of the sea.", R.drawable.ocean_waves, "https://play.google.com/store/apps/details?id=com.example.oceanwaves"),
+                new FreeApp("Lullaby", "Baby lullaby, soft sleep music for infants.", R.drawable.ic_lullaby, "https://play.google.com/store/apps/details?id=com.example.lullaby"),
+                new FreeApp("White Noise", "Block out distractions and focus or sleep deeply.", R.drawable.traffic_noise, "https://play.google.com/store/apps/details?id=com.example.whitenoise"),
+                new FreeApp("Binaural Beats", "Improve focus, meditation, and sleep with brainwave audio.", R.drawable.ic_brainwave, "https://play.google.com/store/apps/details?id=com.example.binauralbeats"),
+                new FreeApp("Sleepy Sounds", "Custom mixes of ambient sounds to help you sleep.", R.drawable.sound_clock, "https://play.google.com/store/apps/details?id=com.example.sleepysounds"),
+                new FreeApp("Nature Ambience", "Experience forest, river, fire, and jungle sounds.", R.drawable.backcricket, "https://play.google.com/store/apps/details?id=com.example.natureambience"),
+                new FreeApp("Meditation Music", "Guided and ambient meditation music tracks.", R.drawable.ic_meditation, "https://play.google.com/store/apps/details?id=com.example.meditationmusic"),
+                new FreeApp("Relaxing Piano", "Soft piano melodies for rest and concentration.", R.drawable.ic_piano, "https://play.google.com/store/apps/details?id=com.example.relaxpiano"),
+                new FreeApp("Focus Timer", "Use Pomodoro method with ambient background loops.", R.drawable.ic_timer, "https://play.google.com/store/apps/details?id=com.example.focustimer")
         );
+
 
 
         adapter = new MoreAppsAdapter(apps, this);

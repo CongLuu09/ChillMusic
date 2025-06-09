@@ -4,40 +4,48 @@
     android:background="@drawable/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:gravity="center_horizontal">
+
 
     <TextView
         android:id="@+id/tvCreditTitle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Credit"
-        android:textColor="#B0BEC5"
-        android:textSize="20sp"
+        android:text="Credits"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:paddingBottom="16dp"/>
+        android:paddingBottom="12dp" />
+
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@drawable/bg_scroll_rounded"
+        android:padding="16dp">
 
         <LinearLayout
             android:id="@+id/creditListContainer"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:divider="?android:dividerVertical"
+            android:showDividers="middle"
+            android:dividerPadding="8dp" />
     </ScrollView>
+
 
     <Button
         android:id="@+id/btnOk"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="OK"
-        android:textAllCaps="true"
-        android:layout_gravity="center"
+        android:textAllCaps="false"
         android:textColor="@android:color/white"
-        android:background="?attr/selectableItemBackground"
-        android:paddingHorizontal="24dp"
-        android:paddingVertical="10dp"/>
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_button_chill"
+        android:paddingVertical="12dp" />
 </LinearLayout>

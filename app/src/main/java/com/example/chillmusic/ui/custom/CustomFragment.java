@@ -101,6 +101,12 @@ public class CustomFragment extends Fragment {
         rainSounds.add(new CustomSound(R.drawable.rain_on_tent, R.raw.rain_tent, "Rain on Tent"));
         rainSounds.add(new CustomSound(R.drawable.rain_on_window, R.raw.rain_window, "Rain on Window"));
         rainSounds.add(new CustomSound(R.drawable.rain_in_forest, R.raw.rain_forest, "Rain in Forest"));
+        rainSounds.add(new CustomSound(R.drawable.rain_on_umbrella, R.raw.rain_on_umbrella, "Rain on umbrella"));
+        rainSounds.add(new CustomSound(R.drawable.rain_on_car_roof, R.raw.rain_on_car_roof, "Rain on car roof"));
+        rainSounds.add(new CustomSound(R.drawable.light_drizzle, R.raw.light_drizzle, "Light drizzle"));
+        rainSounds.add(new CustomSound(R.drawable.river_stream, R.raw.river_stream, "River stream"));
+        rainSounds.add(new CustomSound(R.drawable.leaves_rustling, R.raw.leaves_rustling, "Leaves rustling"));
+        rainSounds.add(new CustomSound(R.drawable.waterfall, R.raw.waterfall, "WaterFall"));
 
         List<CustomSound> natureSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Nature Sounds", natureSounds));
@@ -124,6 +130,10 @@ public class CustomFragment extends Fragment {
         citySounds.add(new CustomSound(R.drawable.cafe_background, R.raw.cafe, "Cafe Background"));
         citySounds.add(new CustomSound(R.drawable.train_passing, R.raw.train, "Train Passing"));
         citySounds.add(new CustomSound(R.drawable.airplane_flying, R.raw.airplane, "Airplane Flying"));
+        citySounds.add(new CustomSound(R.drawable.sound_car, R.raw.car_ride, "Car Rider"));
+        citySounds.add(new CustomSound(R.drawable.bus_station, R.raw.bus_station, "Bus Station"));
+        citySounds.add(new CustomSound(R.drawable.street_music, R.raw.street_music, "Street music"));
+        citySounds.add(new CustomSound(R.drawable.subway_ambience, R.raw.subway_ambience, "Subway ambience"));
 
         List<CustomSound> Cafeandchill = new ArrayList<>();
         groups.add(new CustomSoundGroup("Cafe & Chill", Cafeandchill));
@@ -139,6 +149,9 @@ public class CustomFragment extends Fragment {
         homeSounds.add(new CustomSound(R.drawable.washing_machine, R.raw.washing_machine, "Washing Machine"));
         homeSounds.add(new CustomSound(R.drawable.fridge_humming, R.raw.fridge, "Fridge Humming"));
         homeSounds.add(new CustomSound(R.drawable.dishwasher, R.raw.bowl, "Dishwasher"));
+        homeSounds.add(new CustomSound(R.drawable.vacuum_cleaner, R.raw.vacuum_cleaner, "Vacuum cleaner"));
+        homeSounds.add(new CustomSound(R.drawable.keyboard_typing, R.raw.keyboard_typing, "Keyboard typing"));
+        homeSounds.add(new CustomSound(R.drawable.clock_ticking,  R.raw.clock_ticking, "Clock Ticking"));
 
         List<CustomSound> instrumentSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Instrument Sounds", instrumentSounds));
@@ -150,6 +163,9 @@ public class CustomFragment extends Fragment {
         instrumentSounds.add(new CustomSound(R.drawable.saxophone, R.raw.saxophone, "Saxophone"));
         instrumentSounds.add(new CustomSound(R.drawable.harp, R.raw.harp, "Harp"));
         instrumentSounds.add(new CustomSound(R.drawable.clarinet, R.raw.clarinet, "Clarinet"));
+        instrumentSounds.add(new CustomSound(R.drawable.cello, R.raw.cello, "Cello"));
+        instrumentSounds.add(new CustomSound(R.drawable.trumpet, R.raw.trumpet, "Trumpet"));
+        instrumentSounds.add(new CustomSound(R.drawable.marimba, R.raw.marimba, "Marimba"));
 
         List<CustomSound> animalSounds = new ArrayList<>();
         groups.add(new CustomSoundGroup("Animal Sounds", animalSounds));

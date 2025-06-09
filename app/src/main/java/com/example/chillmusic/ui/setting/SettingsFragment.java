@@ -58,7 +58,9 @@ public class SettingsFragment extends Fragment {
                     break;
 
                 case "App Version":
+                    showAppVersion();
                     break;
+
 
                 case "FAQ":
                     openWeb("https://yourapp.com/faq");
@@ -99,6 +101,25 @@ public class SettingsFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         return view;
     }
+
+    private void showAppVersion() {
+        try {
+            String versionName = requireContext()
+                    .getPackageManager()
+                    .getPackageInfo(requireContext().getPackageName(), 0)
+                    .versionName;
+
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("App Version")
+                    .setMessage("Current version: " + versionName)
+                    .setPositiveButton("OK", null)
+                    .show();
+
+        } catch (Exception e) {
+            showToast("Unable to get version info");
+        }
+    }
+
 
     private void PrivacyPolicy() {
         Intent intent = new Intent(requireContext(), WebViewActivity.class);

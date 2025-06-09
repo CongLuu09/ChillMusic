@@ -6,83 +6,112 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
 
 
         <TextView
             android:id="@+id/tvTitle"
             android:text="FAQ"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
+            android:layout_marginBottom="16dp"
             android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-
-        <TextView
-            android:text="Playback Stops Unexpectedly?"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginTop="24dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:text="Please select the Unrestricted option in the phone battery settings for this app. This will ensure that the app will not be closed accidentally."
-            android:textColor="#CCCCCC"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/btnGoToSettings"
-            android:text="GO TO SETTINGS"
-            android:textStyle="bold"
-            android:layout_marginTop="12dp"
-            android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
 
-        <TextView
-            android:text="How to save custom sound?"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginTop="24dp"
+        <LinearLayout
+            android:orientation="vertical"
+            android:background="@drawable/bg_faq_card"
+            android:padding="16dp"
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:text="Please click the sound icon 🔊 in the bottom right corner of the custom interface to save the custom sound."
-            android:textColor="#CCCCCC"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
+            <TextView
+                android:text="Playback Stops Unexpectedly?"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="Please select the Unrestricted option in the phone battery settings for this app. This ensures the app won't be closed accidentally."
+                android:textColor="#CFD8DC"
+                android:textSize="14sp"
+                android:layout_marginTop="6dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btnGoToSettings"
+                android:text="GO TO SETTINGS"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:background="@drawable/bg_button_chill"
+                android:layout_gravity="end"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:background="@drawable/bg_faq_card"
+            android:padding="16dp"
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="How to save custom sound?"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="Please click the 🔊 icon in the bottom right corner of the custom screen to save your custom sound."
+                android:textColor="#CFD8DC"
+                android:textSize="14sp"
+                android:layout_marginTop="6dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
 
-        <TextView
-            android:text="How to turn off the sound?"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_marginTop="24dp"
+        <LinearLayout
+            android:orientation="vertical"
+            android:background="@drawable/bg_faq_card"
+            android:padding="16dp"
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:text="Please click the pause button ⏸ to turn sound off."
-            android:textColor="#CCCCCC"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:text="How to turn off the sound?"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="Just tap the ⏸ pause button to stop the sound playback."
+                android:textColor="#CFD8DC"
+                android:textSize="14sp"
+                android:layout_marginTop="6dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

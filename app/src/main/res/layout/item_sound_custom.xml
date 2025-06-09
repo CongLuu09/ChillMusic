@@ -2,46 +2,45 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/itemRoot"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
     android:padding="8dp"
     android:background="@drawable/bg_sound_inactive">
 
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:gravity="center_horizontal">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+<com.google.android.material.imageview.ShapeableImageView
+    android:id="@+id/imgIcon"
+    android:layout_width="72dp"
+    android:layout_height="72dp"
+    android:layout_marginBottom="6dp"
+    android:contentDescription="@string/app_name"
+    android:scaleType="centerInside"
+    app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imgIcon"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_marginBottom="6dp"
-            android:contentDescription="@string/app_name"
-            android:scaleType="centerInside"
-        app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
+<TextView
+    android:id="@+id/tvLabel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:maxLines="1"
+    android:ellipsize="end"
+    android:text="Sound Name"
+    android:textSize="14sp"
+    android:textColor="@android:color/white"
+    android:gravity="center"
+    android:padding="2dp" />
+</LinearLayout>
 
-
-        <TextView
-            android:id="@+id/tvLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sound Name"
-            android:textSize="14sp"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:padding="2dp" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/imgLock"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_gravity="top|end"
-        android:visibility="gone"
-        android:contentDescription="Lock Icon"
-        android:layout_margin="4dp"
-        />
-</FrameLayout>
+<ImageView
+android:id="@+id/imgLock"
+android:layout_width="20dp"
+android:layout_height="20dp"
+android:layout_gravity="top|end"
+android:visibility="gone"
+android:contentDescription="Lock Icon"
+android:layout_margin="4dp"/>
+    </FrameLayout>

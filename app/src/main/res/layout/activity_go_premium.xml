@@ -1,82 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
 
-
-    <TextView
-        android:id="@+id/tvTitle"
-        android:text="Go Premium"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center" />
-
-
-    <TextView
-        android:text="The Premium for one year is on sale."
-        android:textColor="#CCCCCC"
-        android:textSize="14sp"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-
-    <TextView
-        android:text="Join our Premium membership now!\nChoose your Premium plan."
-        android:textColor="@android:color/white"
-        android:textSize="14sp"
-        android:gravity="center"
-        android:layout_marginTop="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-
     <LinearLayout
-        android:layout_marginTop="24dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:gravity="center_horizontal">
 
 
-        <include layout="@layout/item_plan_premium" />
-        <include layout="@layout/item_plan_premium_year" />
-        <include layout="@layout/item_plan_premium_lifetime" />
+        <TextView
+            android:id="@+id/tvTitle"
+            android:text="Go Premium"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="8dp" />
+
+
+        <TextView
+            android:text="The Premium for one year is on sale."
+            android:textColor="#B0BEC5"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Join our Premium membership now!\nChoose your Premium plan."
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+
+            <include layout="@layout/item_plan_premium" />
+            <include layout="@layout/item_plan_premium_year" />
+            <include layout="@layout/item_plan_premium_lifetime" />
+        </LinearLayout>
+
+
+        <TextView
+            android:text="Premium Benefits"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+
+        <TextView
+            android:text="• Unlock all premium features\n• No Ads – better focus\n• Support development"
+            android:textColor="#CFD8DC"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp" />
+
+
+        <TextView
+            android:text="* Subscriptions auto-renew unless turned off 24h before the end.\n* Manage your subscription anytime in Play Store."
+            android:textColor="#90A4AE"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
-
-
-    <TextView
-        android:text="Premium Benefits"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginTop="32dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center" />
-
-    <TextView
-        android:text="Unlimited premium features.\nEnjoy a better experience without Ads!"
-        android:textColor="#CCCCCC"
-        android:textSize="14sp"
-        android:gravity="center"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-
-    <TextView
-        android:text="We offer monthly subscription and yearly subscription. Subscription automatically renews unless auto-renew is turned off at least 24h before the end of the current period."
-        android:textColor="#BBBBBB"
-        android:textSize="12sp"
-        android:layout_marginTop="24dp"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+</ScrollView>
