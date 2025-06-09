@@ -19,7 +19,7 @@ public class LayerSound {
     private float volume;
     private MediaPlayer mediaPlayer;
 
-    // Constructor cho local (có mediaPlayer)
+
     public LayerSound(int iconResId, String name, int soundResId, MediaPlayer mediaPlayer, float volume) {
         this.iconResId = iconResId;
         this.name = name;
@@ -30,7 +30,7 @@ public class LayerSound {
         this.imageUrl = null;
     }
 
-    // Constructor cho online (fileUrl + imageUrl)
+
     public LayerSound(int iconResId, String name, int soundResId, String fileUrl, float volume, String imageUrl) {
         this.iconResId = iconResId;
         this.name = name;

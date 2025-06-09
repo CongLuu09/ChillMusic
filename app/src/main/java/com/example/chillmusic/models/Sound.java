@@ -5,7 +5,7 @@ public class Sound {
     private int imageResId;
     private int audioResId;
 
-    // Change constructor parameter order to match usage
+
     public Sound(int imageResId, String title, int audioResId) {
         this.imageResId = imageResId;
         this.title = title;

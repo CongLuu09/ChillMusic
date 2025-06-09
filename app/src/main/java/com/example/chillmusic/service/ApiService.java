@@ -24,7 +24,7 @@ public interface ApiService {
     @GET("/api/sounds")
     Call<List<SoundDto>> getSoundsByIds(@Query("ids") String commaSeparatedIds);
 
-    // Giữ 1 hàm POST cho tạo mix (trả về MixDto)
+
     @POST("/api/mix")
     Call<MixDto> createMix(@Body MixCreateRequest request);
 

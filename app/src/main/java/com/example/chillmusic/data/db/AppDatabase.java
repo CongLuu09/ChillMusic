@@ -18,9 +18,9 @@ import java.util.List;
 public class AppDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "sounds.db";
-    private static final int DATABASE_VERSION = 3; // Tăng phiên bản DB
+    private static final int DATABASE_VERSION = 3;
 
-    // Bảng sounds hiện tại
+
     public static final String TABLE_SOUNDS = "sounds";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
@@ -28,12 +28,12 @@ public class AppDatabase extends SQLiteOpenHelper {
     public static final String COLUMN_SOUND = "soundResId";
     public static final String COLUMN_SCENE = "sceneName";
 
-    // Bảng mới: mix_sounds
+
     public static final String TABLE_MIXS = "mix_sounds";
     public static final String COLUMN_MIX_ID = "_id";
     public static final String COLUMN_MIX_NAME = "name";
     public static final String COLUMN_DEVICE_ID = "deviceId";
-    public static final String COLUMN_SOUND_IDS = "soundIds"; // JSON string
+    public static final String COLUMN_SOUND_IDS = "soundIds";
     public static final String COLUMN_CREATED_AT = "createdAt";
 
     public AppDatabase(Context context) {
@@ -62,7 +62,7 @@ public class AppDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 3) {
-            // Tạo bảng mới khi nâng cấp lên version 3
+
             String CREATE_MIXS_TABLE = "CREATE TABLE " + TABLE_MIXS + " (" +
                     COLUMN_MIX_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_MIX_NAME + " TEXT, " +
@@ -72,11 +72,10 @@ public class AppDatabase extends SQLiteOpenHelper {
             db.execSQL(CREATE_MIXS_TABLE);
         }
 
-        // Nếu cần giữ nguyên bảng sounds hiện tại
-        // Hoặc thêm logic nâng cấp nếu thay đổi bảng sounds
+
     }
 
-    // --- Các hàm của bảng sounds ---
+
 
     public void insertSound(String name, int iconResId, int soundResId, String sceneName) {
         if (isSoundExists(name, sceneName)) return;
@@ -142,7 +141,7 @@ public class AppDatabase extends SQLiteOpenHelper {
         db.close();
     }
 
-    // --- Các hàm của bảng mix_sounds ---
+
 
     public void insertMix(MixDto mix) {
         SQLiteDatabase db = this.getWritableDatabase();

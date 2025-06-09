@@ -8,15 +8,15 @@ public class SoundDto {
     private String name;
 
     @SerializedName("fileSoundUrl")
-    private String fileUrl;      // URL âm thanh từ backend
+    private String fileUrl;
 
     @SerializedName("fileImageUrl")
-    private String imageUrl;     // URL ảnh từ backend
+    private String imageUrl;
 
     private String category;
     private List<String> tags;
 
-    // Constructor đầy đủ các trường, chỉnh thứ tự cho hợp lý
+
     public SoundDto(int id, String name, String fileUrl, String imageUrl, String category, List<String> tags) {
         this.id = id;
         this.name = name;
@@ -26,7 +26,6 @@ public class SoundDto {
         this.tags = tags;
     }
 
-    // Getters và setters
     public int getId() {
         return id;
     }

@@ -7,7 +7,7 @@ import com.example.chillmusic.models.SoundDto;
 public class SoundMapper {
     public static Sound fromDto(SoundDto dto) {
         int defaultImageRes = getDefaultImageByCategory(dto.getCategory());
-        int defaultAudioRes = 0; // Nếu là online, bạn có thể gán 0 hoặc tạo SoundOnline riêng
+        int defaultAudioRes = 0;
 
         return new Sound(defaultImageRes, dto.getName(), defaultAudioRes);
     }

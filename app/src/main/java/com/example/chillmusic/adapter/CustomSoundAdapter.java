@@ -33,7 +33,7 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         void onSoundClick(SoundItem item);
     }
 
-    private final List<Object> items;  // Có thể là String (header) hoặc SoundItem (item)
+    private final List<Object> items;
     private final OnSoundClickListener listener;
     private final Context context;
 
@@ -71,7 +71,7 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             viewHolder.tvLabel.setText(item.getName());
 
-            // Xử lý URL ảnh
+
             final String baseUrl = "http://10.0.2.2:3000";
             String imageUrl = item.getImageUrl();
             String imageToLoad = null;
@@ -92,21 +92,21 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 String finalImageToLoad = imageToLoad;
                 Glide.with(context)
                         .load(imageToLoad)
-                        .placeholder(R.drawable.ic_airplane)  // ảnh placeholder khi loading
-                        .error(R.drawable.ic_bird)            // ảnh hiển thị khi lỗi
+                        .placeholder(R.drawable.ic_airplane)
+                        .error(R.drawable.ic_bird)
                         .listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model,
                                                         Target<Drawable> target, boolean isFirstResource) {
                                 Log.e("CustomSoundAdapter", "❌ Image load failed: " + finalImageToLoad, e);
-                                return false; // để Glide xử lý hiển thị ảnh lỗi
+                                return false;
                             }
 
                             @Override
                             public boolean onResourceReady(Drawable resource, Object model,
                                                            Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                 Log.d("CustomSoundAdapter", "✅ Image loaded: " + finalImageToLoad);
-                                return false; // để Glide xử lý hiển thị ảnh
+                                return false;
                             }
                         })
                         .into(viewHolder.imgIcon);
@@ -114,7 +114,7 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 viewHolder.imgIcon.setImageDrawable(null);
             }
 
-            // Hiển thị biểu tượng khoá nếu item bị khoá
+
             viewHolder.imgLock.setVisibility(item.isLocked() ? View.VISIBLE : View.GONE);
 
             holder.itemView.setOnClickListener(v -> {

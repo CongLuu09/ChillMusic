@@ -94,28 +94,28 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         String baseUrl = "http://10.0.2.2:3000/";
 
         if (!onlineSounds.isEmpty()) {
-            // Map category -> List<SoundItem>
+
             Map<String, List<SoundItem>> groupedByCategory = new LinkedHashMap<>();
 
             for (SoundDto dto : onlineSounds) {
-                // Chuẩn hóa URL file âm thanh
+
                 String fullFileUrl = null;
                 if (dto.getFileUrl() != null) {
                     String fileUrl = dto.getFileUrl();
                     fullFileUrl = fileUrl.startsWith("/") ? baseUrl + fileUrl.substring(1) : baseUrl + fileUrl;
                 }
 
-                // Chuẩn hóa URL ảnh
+
                 String fullImageUrl = null;
                 if (dto.getImageUrl() != null) {
                     String imageUrl = dto.getImageUrl();
                     fullImageUrl = imageUrl.startsWith("/") ? baseUrl + imageUrl.substring(1) : baseUrl + imageUrl;
                 }
 
-                // Tạo SoundItem
+
                 SoundItem soundItem = new SoundItem(
                         dto.getId(),
-                        0, // iconResId = 0 vì ảnh load từ URL
+                        0,
                         true,
                         dto.getName(),
                         0,
@@ -123,22 +123,22 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
                         fullImageUrl
                 );
 
-                // Lấy category, nếu null hoặc trống thì đặt category mặc định
+
                 String category = dto.getCategory();
                 if (category == null || category.isEmpty()) {
                     category = "Others";
                 }
 
-                // Thêm vào map
+
                 if (!groupedByCategory.containsKey(category)) {
                     groupedByCategory.put(category, new ArrayList<>());
                 }
                 groupedByCategory.get(category).add(soundItem);
             }
 
-            // Chuyển map thành danh sách hỗn hợp có header (String) và item (SoundItem)
+
             for (String category : groupedByCategory.keySet()) {
-                allItems.add(category);  // header là tên nhóm
+                allItems.add(category);
                 allItems.addAll(groupedByCategory.get(category));
             }
         }
@@ -161,7 +161,7 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         resultIntent.putExtra("soundResId", item.getSoundResId());
         resultIntent.putExtra("soundId", item.getId());
         resultIntent.putExtra("fileUrl", item.getFileUrl());
-        resultIntent.putExtra("imageUrl", item.getImageUrl()); // Trả về URL ảnh icon
+        resultIntent.putExtra("imageUrl", item.getImageUrl());
         setResult(RESULT_OK, resultIntent);
         finish();
     }

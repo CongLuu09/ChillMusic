@@ -86,7 +86,7 @@ public class WaterfallActivity extends AppCompatActivity {
         timerViewModel = new ViewModelProvider(this).get(TimerViewModel.class);
 
         btnSaveSound.setOnClickListener(v -> {
-            // Thu thập các soundId hợp lệ từ layers đã chọn
+
             List<Long> soundIds = new ArrayList<>();
             for (LayerSound layer : layers) {
                 Log.d("OceanActivity", "Layer: " + layer.getName() + ", id=" + layer.getId());
@@ -95,23 +95,23 @@ public class WaterfallActivity extends AppCompatActivity {
                 }
             }
 
-            // Nếu không có soundId hợp lệ thì thông báo và dừng
+
             if (soundIds.isEmpty()) {
                 Log.d("OceanActivity", "⚠️ No valid sound IDs to save.");
                 Toast.makeText(WaterfallActivity.this, "Không có âm thanh hợp lệ để lưu.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Tạo tên mix theo timestamp
+
             String mixName = "WaterFallMix_" + System.currentTimeMillis();
 
-            // Lấy deviceId thiết bị (ANDROID_ID)
+
             String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-            // Tạo request gửi lên API
+
             MixCreateRequest request = new MixCreateRequest(deviceId, mixName, soundIds);
 
-            // Gọi API lưu mix
+
             ApiService api = RetrofitClient.getApiService();
             api.createMix(request).enqueue(new Callback<MixDto>() {
                 @Override
@@ -119,7 +119,7 @@ public class WaterfallActivity extends AppCompatActivity {
                     if (response.isSuccessful() && response.body() != null) {
                         MixDto savedMix = response.body();
 
-                        // Lưu mix này vào database local
+
                         new Thread(() -> {
                             AppDatabase db = new AppDatabase(WaterfallActivity.this);
                             db.insertMix(savedMix);
@@ -129,7 +129,7 @@ public class WaterfallActivity extends AppCompatActivity {
                                 Toast.makeText(WaterfallActivity.this, "Lưu thành công!", Toast.LENGTH_SHORT).show()
                         );
                     } else {
-                        // Xử lý lỗi
+
                     }
                 }
 
@@ -171,7 +171,7 @@ public class WaterfallActivity extends AppCompatActivity {
                         }
                     }
 
-                    // Sắp xếp filteredMixes theo createdAt giảm dần để lấy mix mới nhất
+
                     filteredMixes.sort((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()));
 
                     runOnUiThread(() -> {
@@ -180,7 +180,7 @@ public class WaterfallActivity extends AppCompatActivity {
 
                             MixDto newestMix = filteredMixes.get(0);
 
-                            // Chuyển List<Integer> sang List<Long>
+
                             List<Long> soundIdsLong = new ArrayList<>();
                             for (Integer id : newestMix.getSoundIds()) {
                                 soundIdsLong.add(id.longValue());
@@ -212,14 +212,13 @@ public class WaterfallActivity extends AppCompatActivity {
     }
 
 
-    // Hàm loadSoundsByIds để lấy chi tiết sound từ backend
     private void loadSoundsByIds(List<Long> ids, Consumer<List<LayerSound>> callback) {
         if (ids == null || ids.isEmpty()) {
             callback.accept(new ArrayList<>());
             return;
         }
 
-        // Tạo chuỗi id phân cách bằng dấu phẩy
+
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < ids.size(); i++) {
             sb.append(ids.get(i));
@@ -378,7 +377,7 @@ public class WaterfallActivity extends AppCompatActivity {
 
     private void playMainSound() {
         if (mainPlayer == null) {
-            mainPlayer = MediaPlayer.create(this, R.raw.waterfall); // Hoặc R.raw.forest tùy bạn
+            mainPlayer = MediaPlayer.create(this, R.raw.waterfall);
             mainPlayer.setLooping(true);
         }
         mainPlayer.start();
@@ -449,19 +448,17 @@ public class WaterfallActivity extends AppCompatActivity {
                 String name = data.getStringExtra("name");
                 int icon = data.getIntExtra("iconResId", 0);
                 int soundResId = data.getIntExtra("soundResId", 0);
-                String imageUrl = data.getStringExtra("imageUrl"); // Nhận thêm
+                String imageUrl = data.getStringExtra("imageUrl");
 
                 Log.d("OceanActivity", "Received sound data: name=" + name + ", icon=" + icon + ", fileUrl=" + fileUrl + ", imageUrl=" + imageUrl + ", soundResId=" + soundResId);
 
-                // Sửa điều kiện kiểm tra hợp lệ:
+
                 if (name == null || (icon == 0 && (fileUrl == null || fileUrl.isEmpty()) && (imageUrl == null || imageUrl.isEmpty()))) {
                     Log.d("OceanActivity", "⚠️ Incomplete sound data received. Skipping layer creation.");
                     return;
                 }
 
-                // Nếu local chưa có fileUrl → convert & upload, xử lý tương tự cũ
 
-                // Tạo LayerSound, ưu tiên dùng imageUrl để load icon
                 LayerSound newLayer = new LayerSound(
                         icon,
                         name,
@@ -505,12 +502,12 @@ public class WaterfallActivity extends AppCompatActivity {
 
                 DataOutputStream output = new DataOutputStream(connection.getOutputStream());
 
-                // Phần name
+
                 output.writeBytes("--" + boundary + "\r\n");
                 output.writeBytes("Content-Disposition: form-data; name=\"name\"\r\n\r\n");
                 output.writeBytes(name + "\r\n");
 
-                // Phần file
+
                 output.writeBytes("--" + boundary + "\r\n");
                 output.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"\r\n");
                 output.writeBytes("Content-Type: audio/mpeg\r\n\r\n");
@@ -524,7 +521,7 @@ public class WaterfallActivity extends AppCompatActivity {
                 output.writeBytes("\r\n");
                 fileInput.close();
 
-                // Kết thúc multipart
+
                 output.writeBytes("--" + boundary + "--\r\n");
                 output.flush();
                 output.close();
