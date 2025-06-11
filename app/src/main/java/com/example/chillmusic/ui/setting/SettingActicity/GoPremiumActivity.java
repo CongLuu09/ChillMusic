@@ -17,18 +17,18 @@ public class GoPremiumActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_premium);
-
-        findViewById(R.id.planMonthly).setOnClickListener(view -> {
-            Toast.makeText(this, "Monthly plan selected (Demo)", Toast.LENGTH_SHORT).show();
-        });
-
-        findViewById(R.id.planYearly).setOnClickListener(view -> {
-            Toast.makeText(this, "Yearly plan selected (Demo)", Toast.LENGTH_SHORT).show();
-        });
-
-        findViewById(R.id.planLifetime).setOnClickListener(view -> {
-            Toast.makeText(this, "Lifetime plan selected (Demo)", Toast.LENGTH_SHORT).show();
-        });
-
+        setupPlanClickListeners();
     }
+    private void setupPlanClickListeners() {
+        setupPlan(R.id.planMonthly, "Monthly plan selected");
+        setupPlan(R.id.planYearly, "Yearly plan selected");
+        setupPlan(R.id.planLifetime, "Lifetime plan selected");
+    }
+
+    private void setupPlan(int viewId, String message) {
+        findViewById(viewId).setOnClickListener(view -> {
+            Toast.makeText(this, message + " (Demo)", Toast.LENGTH_SHORT).show();
+        });
+    }
+
 }

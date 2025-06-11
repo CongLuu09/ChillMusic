@@ -233,7 +233,7 @@ public class TrainJourneyActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d("OceanActivity", "Sounds returned: " + response.body().size());
                     List<LayerSound> layerSounds = new ArrayList<>();
-                    String baseUrl = "http://10.0.2.2:3000/";
+                    String baseUrl = "http://192.168.1.12:3000/";
 
                     for (SoundDto dto : response.body()) {
                         Log.d("OceanActivity", "SoundDto loaded: " + dto.getName() + ", id: " + dto.getId());
@@ -380,7 +380,7 @@ public class TrainJourneyActivity extends AppCompatActivity {
         }
         mainPlayer.start();
         isPlaying = true;
-        btnPlayPause.setImageResource(R.drawable.ic_play);
+        btnPlayPause.setImageResource(R.drawable.stop);
     }
 
     private void pauseMainSound() {
@@ -393,7 +393,7 @@ public class TrainJourneyActivity extends AppCompatActivity {
             mainPlayer = null;
         }
         isPlaying = false;
-        btnPlayPause.setImageResource(R.drawable.ic_pause);
+        btnPlayPause.setImageResource(R.drawable.play);
     }
 
     @Override
@@ -490,7 +490,7 @@ public class TrainJourneyActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 String boundary = "===" + System.currentTimeMillis() + "===";
-                URL url = new URL("http://10.0.2.2:3000/api/Sound/Upload");
+                URL url = new URL("http://192.168.1.12:3000/api/Sound/Upload");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 connection.setRequestMethod("POST");

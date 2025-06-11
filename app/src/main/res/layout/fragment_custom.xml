@@ -54,7 +54,7 @@
             android:layout_height="48dp"
             android:background="@drawable/bg_button_circle"
             android:padding="10dp"
-            android:src="@drawable/ic_play"
+            android:src="@drawable/play"
             android:contentDescription="Play/Pause"
             app:tint="@android:color/white" />
 

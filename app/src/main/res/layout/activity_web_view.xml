@@ -4,17 +4,19 @@
     android:orientation="vertical"
     android:background="@drawable/background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="horizontal"
-        android:background="@drawable/background"
+        android:background="@drawable/bg_toolbar_dark"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:elevation="4dp">
 
         <ImageView
             android:id="@+id/btnBack"
@@ -40,5 +42,6 @@
         android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:background="@android:color/transparent" />
 </LinearLayout>

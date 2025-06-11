@@ -72,7 +72,7 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewHolder.tvLabel.setText(item.getName());
 
 
-            final String baseUrl = "http://10.0.2.2:3000";
+            final String baseUrl = "http://192.168.1.12:3000";
             String imageUrl = item.getImageUrl();
             String imageToLoad = null;
             if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -92,8 +92,8 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 String finalImageToLoad = imageToLoad;
                 Glide.with(context)
                         .load(imageToLoad)
-                        .placeholder(R.drawable.ic_airplane)
-                        .error(R.drawable.ic_bird)
+                        .placeholder(R.drawable.airplane_flying)
+                        .error(R.drawable.bird_chirping)
                         .listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model,

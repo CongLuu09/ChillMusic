@@ -53,8 +53,8 @@ public class PlayLayerAdapter extends RecyclerView.Adapter<PlayLayerAdapter.View
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(context)
                     .load(imageUrl)
-                    .placeholder(R.drawable.ic_airplane)
-                    .error(R.drawable.ic_bird)
+                    .placeholder(R.drawable.airplane_flying)
+                    .error(R.drawable.bird_chirping)
                     .into(holder.imgLayerIcon);
         } else {
             if (layer.getIconResId() != 0) {

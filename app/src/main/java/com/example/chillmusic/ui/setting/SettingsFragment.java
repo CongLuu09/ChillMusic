@@ -164,7 +164,7 @@ public class SettingsFragment extends Fragment {
 
     private void sendFeedbackEmail() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:feedback@yourapp.com"));
+        intent.setData(Uri.parse("mailto:cong090502@gmail.com"));
         intent.putExtra(Intent.EXTRA_SUBJECT, "Sleep Sound Feedback");
         startActivity(Intent.createChooser(intent, "Send Feedback"));
     }

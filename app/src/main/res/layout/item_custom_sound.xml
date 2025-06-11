@@ -12,7 +12,7 @@ android:id="@+id/img_sound_icon"
 android:layout_width="48dp"
 android:layout_height="48dp"
 android:scaleType="centerInside"
-android:src="@drawable/ic_heavy_rain"
+android:src="@drawable/heavy_rain"
 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize16dp"
 android:contentDescription="@string/sound_icon" />
 
