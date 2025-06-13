@@ -13,6 +13,7 @@ public class MixDto {
         return id;
     }
 
+
     public String getName() {
         return name;
     }
@@ -48,4 +49,5 @@ public class MixDto {
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
+
 }

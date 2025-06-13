@@ -90,14 +90,16 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
     }
 
     private void updateCombinedSoundItems() {
+
         allItems.clear();
-        String baseUrl = "http://192.168.1.12:3000/";
+        String baseUrl = "https://a8f0-42-113-99-170.ngrok-free.app/";
 
         if (!onlineSounds.isEmpty()) {
 
             Map<String, List<SoundItem>> groupedByCategory = new LinkedHashMap<>();
 
             for (SoundDto dto : onlineSounds) {
+                Log.d("SoundDtoDebug", "id=" + dto.getId() + ", fileUrl=" + dto.getFileUrl());
 
                 String fullFileUrl = null;
                 if (dto.getFileUrl() != null) {
@@ -165,6 +167,7 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         setResult(RESULT_OK, resultIntent);
         finish();
     }
+
 
 
 }

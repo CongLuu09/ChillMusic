@@ -2,6 +2,7 @@ package com.example.chillmusic.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,35 +14,24 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.example.chillmusic.R;
-import com.example.chillmusic.adapter.SoundAdapter;
-import com.example.chillmusic.models.Sound;
-import com.example.chillmusic.ui.player.AirTravel.AirTravelActivity;
-import com.example.chillmusic.ui.player.Cafe.CafeChillActivity;
-import com.example.chillmusic.ui.player.Desert.DesertActivity;
-import com.example.chillmusic.ui.player.Farm.FarmActivity;
-import com.example.chillmusic.ui.player.Fire.FireActivity;
-import com.example.chillmusic.ui.player.Forest.ForestActivity;
-import com.example.chillmusic.ui.player.Lake.LakeActivity;
-import com.example.chillmusic.ui.player.Night.NightActivity;
-import com.example.chillmusic.ui.player.OceanActivity;
-import com.example.chillmusic.ui.player.Rain.RainActivity;
-import com.example.chillmusic.ui.player.Train.TrainJourneyActivity;
-import com.example.chillmusic.ui.player.Underwater.UnderwaterActivity;
-import com.example.chillmusic.ui.player.WaterFall.WaterfallActivity;
+import com.example.chillmusic.adapter.CategoryAdapter;
+import com.example.chillmusic.models.Category;
+import com.example.chillmusic.service.ApiService;
+import com.example.chillmusic.service.RetrofitClient;
+import com.example.chillmusic.ui.player.CategoryPlayerActivity;
+import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private SoundAdapter soundAdapter;
-
-    private final Map<String, Class<?>> soundActivityMap = new HashMap<>();
+    private CategoryAdapter categoryAdapter;
 
     @Nullable
     @Override
@@ -53,63 +43,43 @@ public class HomeFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rv_sounds);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        initSoundActivityMap();
+        fetchCategories();
 
-        soundAdapter = new SoundAdapter(getSoundList(), sound -> {
-            if (sound.getTitle().equals("Ocean")) {
-                startActivity(new Intent(getContext(), OceanActivity.class));
-            } else if (sound.getTitle().equals("Forest")) {
-                startActivity(new Intent(getContext(), ForestActivity.class));
-            } else if (sound.getTitle().equals("Rain")) {
-                startActivity(new Intent(getContext(), RainActivity.class));
-            } else if (sound.getTitle().equals("Night")) {
-                startActivity(new Intent(getContext(), NightActivity.class));
-            } else if (sound.getTitle().equals("Fire")) {
-                startActivity(new Intent(getContext(), FireActivity.class));
-            } else if (sound.getTitle().equals("Lake")) {
-                startActivity(new Intent(getContext(), LakeActivity.class));
-            } else if (sound.getTitle().equals("Farm")) {
-                startActivity(new Intent(getContext(), FarmActivity.class));
-            } else if (sound.getTitle().equals("Waterfall")) {
-                startActivity(new Intent(getContext(), WaterfallActivity.class));
-            } else if (sound.getTitle().equals("Underwater")) {
-                startActivity(new Intent(getContext(), UnderwaterActivity.class));
-            } else if (sound.getTitle().equals("Desert")) {
-                startActivity(new Intent(getContext(), DesertActivity.class));
-            } else if (sound.getTitle().equals("Train Journey")) {
-                startActivity(new Intent(getContext(), TrainJourneyActivity.class));
-            } else if (sound.getTitle().equals("Air Travel")) {
-                startActivity(new Intent(getContext(), AirTravelActivity.class));
-            } else if (sound.getTitle().equals("Cafe & Chill")) {
-                startActivity(new Intent(getContext(), CafeChillActivity.class));
-            } else {
-                Toast.makeText(getContext(), "Clicked: " + sound.getImageResId(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        recyclerView.setAdapter(soundAdapter);
         return view;
     }
 
-    private void initSoundActivityMap() {
+    private void fetchCategories() {
+        ApiService api = RetrofitClient.getApiService();
 
-    }
+        api.getAllCategories().enqueue(new Callback<List<Category>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Category>> call, @NonNull Response<List<Category>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Category> categories = response.body();
+                    Log.d("API", "Fetched categories: " + new Gson().toJson(categories));
 
-    private List<Sound> getSoundList() {
-        List<Sound> list = new ArrayList<>();
-        list.add(new Sound( R.drawable.sound_ocean, "Ocean", R.raw.ocean_main));
-        list.add(new Sound( R.drawable.sound_forest, "Forest", R.raw.forest));
-        list.add(new Sound( R.drawable.sound_rain, "Rain", R.raw.light_rain));
-        list.add(new Sound( R.drawable.sound_night, "Night", R.raw.main_night));
-        list.add(new Sound( R.drawable.sound_fire, "Fire", R.raw.fire));
-        list.add(new Sound( R.drawable.sound_lake, "Lake", R.raw.lake));
-        list.add(new Sound( R.drawable.sound_farm, "Farm", R.raw.farm));
-        list.add(new Sound( R.drawable.sound_waterfall, "Waterfall", R.raw.waterfall));
-        list.add(new Sound( R.drawable.sound_underwater, "Underwater", R.raw.underwater));
-        list.add(new Sound( R.drawable.sound_desert, "Desert", R.raw.desert));
-        list.add(new Sound( R.drawable.sound_train, "Train Journey", R.raw.train));
-        list.add(new Sound( R.drawable.sound_airplane, "Air Travel", R.raw.airplane));
-        list.add(new Sound( R.drawable.sound_cafe, "Cafe & Chill", R.raw.cafe));
-        return list;
+                    categoryAdapter = new CategoryAdapter(getContext(), categories, category -> {
+                        Intent intent = new Intent(getContext(), CategoryPlayerActivity.class);
+                        intent.putExtra("categoryName", category.getName());
+                        intent.putExtra("soundUrl", category.getSoundUrl());
+                        intent.putExtra("imageUrl", category.getImageUrl());
+                        startActivity(intent);
+                    });
+
+                    recyclerView.setAdapter(categoryAdapter);
+                } else {
+                    Log.e("API", "Không thể tải danh sách category: " + response.code());
+                    Toast.makeText(getContext(), "Không thể tải danh sách category", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+
+            @Override
+            public void onFailure(@NonNull Call<List<Category>> call, @NonNull Throwable t) {
+                Log.e("HomeFragment", "Lỗi mạng khi tải danh sách category: " + t.getMessage(), t);
+                Toast.makeText(getContext(), "Lỗi: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+        });
     }
 }

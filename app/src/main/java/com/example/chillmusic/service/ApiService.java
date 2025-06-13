@@ -1,5 +1,6 @@
 package com.example.chillmusic.service;
 
+import com.example.chillmusic.models.Category;
 import com.example.chillmusic.models.MixCreateRequest;
 import com.example.chillmusic.models.MixDto;
 import com.example.chillmusic.models.MixUpdateRequest;
@@ -36,6 +37,11 @@ public interface ApiService {
 
     @DELETE("/api/mix/{id}")
     Call<Void> deleteMix(@Path("id") int id);
+
+    @GET("/api/categories")
+    Call<List<Category>> getAllCategories();
+
+
 
     @Multipart
     @POST("/api/upload")
