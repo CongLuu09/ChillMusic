@@ -1,24 +1,31 @@
 package com.example.chillmusic.ui.custom;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chillmusic.R;
 import com.example.chillmusic.adapter.CustomSoundAdapter;
-import com.example.chillmusic.models.CustomSound;
-import com.example.chillmusic.models.CustomSoundGroup;
 import com.example.chillmusic.models.SoundDto;
 import com.example.chillmusic.models.SoundItem;
 import com.example.chillmusic.service.ApiService;
 import com.example.chillmusic.service.RetrofitClient;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -37,6 +44,8 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
     private TextView tvTitle;
     private final List<Object> allItems = new ArrayList<>();
     private final List<SoundDto> onlineSounds = new ArrayList<>();
+    private RewardedAd rewardedAd;
+    private boolean isLoadingAd = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,10 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         setupRecyclerView();
         setupListeners();
         fetchOnlineSounds();
+
+
+        MobileAds.initialize(this, initializationStatus -> {});
+        loadRewardedAd();
     }
 
     private void setupListeners() {
@@ -90,54 +103,24 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
     }
 
     private void updateCombinedSoundItems() {
-
         allItems.clear();
-        String baseUrl = "https://a8f0-42-113-99-170.ngrok-free.app/";
+        String baseUrl = "http://192.168.1.10:3000/";
 
         if (!onlineSounds.isEmpty()) {
-
             Map<String, List<SoundItem>> groupedByCategory = new LinkedHashMap<>();
-
             for (SoundDto dto : onlineSounds) {
-                Log.d("SoundDtoDebug", "id=" + dto.getId() + ", fileUrl=" + dto.getFileUrl());
-
-                String fullFileUrl = null;
-                if (dto.getFileUrl() != null) {
-                    String fileUrl = dto.getFileUrl();
-                    fullFileUrl = fileUrl.startsWith("/") ? baseUrl + fileUrl.substring(1) : baseUrl + fileUrl;
-                }
-
-
-                String fullImageUrl = null;
-                if (dto.getImageUrl() != null) {
-                    String imageUrl = dto.getImageUrl();
-                    fullImageUrl = imageUrl.startsWith("/") ? baseUrl + imageUrl.substring(1) : baseUrl + imageUrl;
-                }
-
+                String fullFileUrl = dto.getFileUrl() != null ? baseUrl + dto.getFileUrl().replaceFirst("^/", "") : null;
+                String fullImageUrl = dto.getImageUrl() != null ? baseUrl + dto.getImageUrl().replaceFirst("^/", "") : null;
 
                 SoundItem soundItem = new SoundItem(
-                        dto.getId(),
-                        0,
-                        true,
-                        dto.getName(),
-                        0,
-                        fullFileUrl,
-                        fullImageUrl
+                        dto.getId(), 0, true,
+                        dto.getName(), 0,
+                        fullFileUrl, fullImageUrl
                 );
 
-
-                String category = dto.getCategory();
-                if (category == null || category.isEmpty()) {
-                    category = "Others";
-                }
-
-
-                if (!groupedByCategory.containsKey(category)) {
-                    groupedByCategory.put(category, new ArrayList<>());
-                }
-                groupedByCategory.get(category).add(soundItem);
+                String category = dto.getCategory() == null || dto.getCategory().isEmpty() ? "Others" : dto.getCategory();
+                groupedByCategory.computeIfAbsent(category, k -> new ArrayList<>()).add(soundItem);
             }
-
 
             for (String category : groupedByCategory.keySet()) {
                 allItems.add(category);
@@ -148,12 +131,16 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         runOnUiThread(() -> adapter.notifyDataSetChanged());
     }
 
-
-
     @Override
     public void onSoundClick(SoundItem item) {
         if (item == null) return;
-        returnResult(item);
+
+        if (SoundUnlockManager.isSoundUnlocked(this, (int) item.getId())) {
+            returnResult(item);
+        } else {
+            showRewardedAd(item);
+        }
+
     }
 
     private void returnResult(SoundItem item) {
@@ -168,6 +155,65 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
         finish();
     }
 
+    private void loadRewardedAd() {
+        if (isLoadingAd || rewardedAd != null) return;
+
+        isLoadingAd = true;
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        RewardedAd.load(this, "ca-app-pub-3940256099942544/5224354917", adRequest, new RewardedAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull RewardedAd ad) {
+                rewardedAd = ad;
+                isLoadingAd = false;
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull com.google.android.gms.ads.LoadAdError adError) {
+                rewardedAd = null;
+                isLoadingAd = false;
+                Log.e("AD", "❌ Ad load failed: " + adError.getMessage());
+            }
+        });
+    }
+
+    private void showRewardedAd(SoundItem item) {
+        if (rewardedAd != null) {
+            rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    rewardedAd = null;
+                    loadRewardedAd();
+                }
+            });
+
+            rewardedAd.show(this, rewardItem -> {
+                SoundUnlockManager.unlockSound(this, (int) item.getId());
+                Toast.makeText(this, "✅ Đã mở khóa trong 7 ngày!", Toast.LENGTH_SHORT).show();
+                returnResult(item);
+            });
+        } else {
+            Toast.makeText(this, "Quảng cáo chưa sẵn sàng", Toast.LENGTH_SHORT).show();
+            loadRewardedAd();
+        }
+    }
 
 
+    public static class SoundUnlockManager {
+        private static final String PREF_NAME = "SoundUnlockPrefs";
+        private static final long UNLOCK_DURATION_MS = 7L * 24 * 60 * 60 * 1000;
+
+        public static boolean isSoundUnlocked(Context context, int soundId) {
+            SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+            long expireAt = prefs.getLong("sound_" + soundId, 0);
+            return System.currentTimeMillis() < expireAt;
+        }
+
+        public static void unlockSound(Context context, int soundId) {
+            long expireAt = System.currentTimeMillis() + UNLOCK_DURATION_MS;
+            SharedPreferences.Editor editor = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit();
+            editor.putLong("sound_" + soundId, expireAt);
+            editor.apply();
+        }
+    }
 }

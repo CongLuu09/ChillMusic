@@ -110,7 +110,7 @@ public class CustomFragment extends Fragment {
     private void updateSoundItems() {
         List<CustomSoundGroup> groups = new ArrayList<>();
         Map<String, List<CustomSound>> groupedMap = new LinkedHashMap<>();
-        String baseUrl = "https://a8f0-42-113-99-170.ngrok-free.app/";
+        String baseUrl = "http://192.168.1.10:3000/";
 
         for (SoundDto dto : onlineSounds) {
             String fullFileUrl = dto.getFileUrl() != null ? baseUrl + dto.getFileUrl().replaceFirst("/", "") : null;

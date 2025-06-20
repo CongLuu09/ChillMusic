@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">ChillMusic</string>
     <string name="sound_icon">Sound Icon</string>
+
+    <string name="subscription_notice">
+    Các biến động về tiền tệ, phí ngân hàng hoặc phí tiện lợi và thuế áp dụng do người bán và nhà cung cấp dịch vụ di động của bạn tính phí có thể làm tăng số tiền cuối cùng của bạn.
+    &lt;u&gt;Hãy xem các điều khoản và điều kiện của nhà cung cấp dịch vụ của bạn.&lt;/u&gt;
+
+    Bằng việc nhấn vào &quot;Đăng ký&quot;, bạn đồng ý rằng gói thuê bao của bạn sẽ tự động gia hạn cho đến khi bị hủy. Chúng tôi sẽ thông báo cho bạn khi có thay đổi về mức giá, theo như mô tả trong &lt;u&gt;Điều khoản dịch vụ của Google Play&lt;/u&gt;. &lt;u&gt;Tìm hiểu cách hủy&lt;/u&gt;.
+</string>
+
 </resources>

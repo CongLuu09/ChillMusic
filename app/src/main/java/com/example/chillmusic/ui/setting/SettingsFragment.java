@@ -196,13 +196,13 @@ public class SettingsFragment extends Fragment {
     }
 
     private void openPlayStore() {
-        String packageId = "relax.sleep.relaxation.sleepingsounds";
+        String packageId = requireContext().getPackageName();
         try {
             startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("market://details?id=" + packageId)));
         } catch (Exception e) {
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/details?id=" + packageId + "&hl=vi")));
+                    Uri.parse("https://play.google.com/store/apps/details?id=" + packageId)));
         }
     }
 }

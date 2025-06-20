@@ -66,8 +66,8 @@ public class CategoryPlayerActivity extends AppCompatActivity {
     static {
         categorySoundMap.put("Ocean", R.raw.ocean_main);
         categorySoundMap.put("Forest", R.raw.forest);
-        categorySoundMap.put("Rain", R.raw.main_rain);
-        categorySoundMap.put("Night", R.raw.main_night);
+        categorySoundMap.put("Rain", R.raw.rain_forest);
+        categorySoundMap.put("Midnight", R.raw.cicada);
         categorySoundMap.put("Fire", R.raw.fire);
         categorySoundMap.put("Lake", R.raw.lake);
         categorySoundMap.put("Farm", R.raw.farm);
@@ -97,7 +97,7 @@ public class CategoryPlayerActivity extends AppCompatActivity {
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             if (!imageUrl.startsWith("http")) {
-                imageUrl = "https://a8f0-42-113-99-170.ngrok-free.app/" + imageUrl;
+                imageUrl = "http://192.168.1.10:3000/" + imageUrl;
             }
 
             Glide.with(this)
@@ -322,7 +322,7 @@ public class CategoryPlayerActivity extends AppCompatActivity {
             public void onResponse(Call<List<SoundDto>> call, Response<List<SoundDto>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<LayerSound> layerSounds = new ArrayList<>();
-                    String baseUrl = "https://a8f0-42-113-99-170.ngrok-free.app/";
+                    String baseUrl = "http://192.168.1.10:3000/";
 
                     for (SoundDto dto : response.body()) {
                         String fullFileUrl = (dto.getFileUrl() != null && !dto.getFileUrl().startsWith("http"))

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#121212"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:text="Google Play"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:textColor="#FFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#222222" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:background="#222222"
+            android:padding="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/premiumIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/app_name" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginStart="16dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/premiumTitle"
+                    android:text="Premium for one month"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/premiumDesc"
+                    android:text="Sleep Sounds - relaxing sounds"
+                    android:textColor="#D6D6D6"
+                    android:textSize="13sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:background="#222222"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="4dp"
+            android:paddingTop="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/premiumStart"
+                android:text="Ngày bắt đầu hôm nay"
+                android:textColor="#FFF"
+                android:textSize="15sp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/premiumPrice"
+                android:text="23.000 đ/tháng"
+                android:textColor="#FFF"
+                android:textSize="15sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="viewEnd"
+                android:layout_gravity="end" />
+        </LinearLayout>
+
+
+        <TextView
+            android:text="Thêm thuế ℹ️"
+            android:textSize="13sp"
+            android:textColor="#90A4AE"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#222222"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="0dp" />
+
+        <TextView
+            android:text="Hủy bất kỳ lúc nào trong phần Gói thuê bao trên Google Play"
+            android:textColor="#FFF"
+            android:textSize="14sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#222222"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="12dp" />
+
+
+
+        <LinearLayout
+            android:id="@+id/layoutPaymentHeader"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:background="#222"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="Chọn phương thức thanh toán"
+                android:textColor="#FFF"
+                android:textSize="16sp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/iconToggle"
+                android:src="@android:drawable/arrow_down_float"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:tint="#FFF" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layoutPaymentMethods"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <LinearLayout
+                android:id="@+id/itemMobifone"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:background="#181818"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="Mobifone"
+                    android:textColor="#FFF"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/checkMobifone"
+                    android:src="@android:drawable/checkbox_off_background"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                  />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/itemMomo"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:background="#181818"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="MoMo E-wallet"
+                    android:textColor="#FFF"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:id="@+id/checkMomo"
+                    android:src="@android:drawable/checkbox_off_background"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+        <TextView
+            android:id="@+id/tvnotice"
+            android:text="@string/subscription_notice"
+            android:textColor="#B0BEC5"
+            android:textSize="13sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:autoLink="web"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:lineSpacingExtra="3dp" />
+
+
+        <Button
+            android:id="@+id/btnSubscribe"
+            android:text="Đăng ký"
+            android:textAllCaps="false"
+            android:backgroundTint="#90CAF9"
+            android:textColor="#212121"
+            android:textSize="17sp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="18dp"
+            android:layout_marginTop="2dp"
+            android:elevation="2dp" />
+    </LinearLayout>
+</ScrollView>
