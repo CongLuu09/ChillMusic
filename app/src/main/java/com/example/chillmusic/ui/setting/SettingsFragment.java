@@ -77,7 +77,7 @@ public class SettingsFragment extends Fragment {
                 case "Manage Subscriptions":
                     try {
                         startActivity(new Intent(Intent.ACTION_VIEW,
-                                Uri.parse("https://play.google.com/store/account/subscriptions")));
+                                Uri.parse("https://play.google.com/store/account/subscriptions?sku=your-sub-product-id&package=your-app-package")));
                     } catch (Exception e) {
                         showToast("Unable to open subscriptions.");
                     }
