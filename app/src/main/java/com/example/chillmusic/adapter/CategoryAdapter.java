@@ -54,7 +54,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.tvSoundTitle.setText(category.getName());
 
         String rawUrl = category.getImageUrl();
-        String imageUrl = rawUrl.startsWith("http") ? rawUrl : "http://192.168.1.7:3000" + rawUrl;
+        String imageUrl = rawUrl.startsWith("http") ? rawUrl : "http://192.168.1.15:3000" + rawUrl;
 
         Log.d("CategoryAdapter", "Loading image from: " + imageUrl);
 

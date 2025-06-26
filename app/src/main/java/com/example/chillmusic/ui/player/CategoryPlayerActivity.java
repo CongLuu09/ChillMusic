@@ -97,7 +97,7 @@ public class CategoryPlayerActivity extends AppCompatActivity {
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             if (!imageUrl.startsWith("http")) {
-                imageUrl = "http://192.168.1.7:3000/" + imageUrl;
+                imageUrl = "http://192.168.1.15:3000/" + imageUrl;
             }
 
             Glide.with(this)
@@ -322,7 +322,7 @@ public class CategoryPlayerActivity extends AppCompatActivity {
             public void onResponse(Call<List<SoundDto>> call, Response<List<SoundDto>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<LayerSound> layerSounds = new ArrayList<>();
-                    String baseUrl = "http://192.168.1.7:3000/";
+                    String baseUrl = "http://192.168.1.15:3000/";
 
                     for (SoundDto dto : response.body()) {
                         String fullFileUrl = (dto.getFileUrl() != null && !dto.getFileUrl().startsWith("http"))
