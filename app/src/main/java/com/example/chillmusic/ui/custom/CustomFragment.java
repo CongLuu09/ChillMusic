@@ -20,6 +20,7 @@ import com.example.chillmusic.models.CustomSoundGroup;
 import com.example.chillmusic.models.SoundDto;
 import com.example.chillmusic.service.ApiService;
 import com.example.chillmusic.service.RetrofitClient;
+import com.example.chillmusic.utils.AuthPreferences;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,7 +90,13 @@ public class CustomFragment extends Fragment {
     }
 
     private void fetchOnlineSounds() {
-        ApiService api = RetrofitClient.getApiService();
+        AuthPreferences authPrefs = new AuthPreferences(requireContext());
+        String xsrfToken = authPrefs.getXsrfToken();
+        String sessionToken = authPrefs.getSessionToken();
+
+        ApiService api = RetrofitClient.getApiService(requireContext());
+
+
         api.getAllSounds().enqueue(new Callback<List<SoundDto>>() {
             @Override
             public void onResponse(Call<List<SoundDto>> call, Response<List<SoundDto>> response) {
@@ -110,7 +117,7 @@ public class CustomFragment extends Fragment {
     private void updateSoundItems() {
         List<CustomSoundGroup> groups = new ArrayList<>();
         Map<String, List<CustomSound>> groupedMap = new LinkedHashMap<>();
-        String baseUrl = "http://192.168.1.15:3000/";
+        String baseUrl = "https://sleepchills.kenhtao.site/";
 
         for (SoundDto dto : onlineSounds) {
             String fullFileUrl = dto.getFileUrl() != null ? baseUrl + dto.getFileUrl().replaceFirst("/", "") : null;

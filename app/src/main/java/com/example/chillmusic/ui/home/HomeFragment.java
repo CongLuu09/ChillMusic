@@ -20,6 +20,7 @@ import com.example.chillmusic.models.Category;
 import com.example.chillmusic.service.ApiService;
 import com.example.chillmusic.service.RetrofitClient;
 import com.example.chillmusic.ui.player.CategoryPlayerActivity;
+import com.example.chillmusic.utils.AuthPreferences;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -49,7 +50,18 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchCategories() {
-        ApiService api = RetrofitClient.getApiService();
+
+        AuthPreferences authPrefs = new AuthPreferences(requireContext());
+        String xsrfToken = authPrefs.getXsrfToken();
+        String sessionToken = authPrefs.getSessionToken();
+
+        Log.d("AUTH_TOKENS", "XSRF = " + xsrfToken);
+        Log.d("AUTH_TOKENS", "SESSION = " + sessionToken);
+
+
+        ApiService api = RetrofitClient.getApiService(requireContext());
+
+
 
         api.getAllCategories().enqueue(new Callback<List<Category>>() {
             @Override
@@ -68,18 +80,25 @@ public class HomeFragment extends Fragment {
 
                     recyclerView.setAdapter(categoryAdapter);
                 } else {
-                    Log.e("API", "Không thể tải danh sách category: " + response.code());
-                    Toast.makeText(getContext(), "Không thể tải danh sách category", Toast.LENGTH_SHORT).show();
+                    String errorMsg = "";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorMsg = response.errorBody().string();
+                        }
+                    } catch (Exception e) {
+                        errorMsg = "Không đọc được errorBody: " + e.getMessage();
+                    }
+                    Log.e("API", "Không thể tải danh sách category: " + response.code() + " | errorBody: " + errorMsg);
+                    Toast.makeText(getContext(), "Không thể tải danh sách category: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
-
 
             @Override
             public void onFailure(@NonNull Call<List<Category>> call, @NonNull Throwable t) {
                 Log.e("HomeFragment", "Lỗi mạng khi tải danh sách category: " + t.getMessage(), t);
                 Toast.makeText(getContext(), "Lỗi: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
-
         });
     }
+
 }

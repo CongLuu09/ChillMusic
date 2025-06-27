@@ -58,6 +58,9 @@ dependencies {
     implementation ("com.google.android.gms:play-services-ads:23.0.0")
     implementation ("com.android.billingclient:billing:6.1.0")
 
+    implementation ("com.github.franmontiel:PersistentCookieJar:v1.0.1")
+
+
 
 
     implementation(libs.appcompat)

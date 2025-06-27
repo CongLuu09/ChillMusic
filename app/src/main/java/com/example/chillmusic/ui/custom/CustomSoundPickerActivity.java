@@ -1,5 +1,7 @@
 package com.example.chillmusic.ui.custom;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +22,7 @@ import com.example.chillmusic.models.SoundDto;
 import com.example.chillmusic.models.SoundItem;
 import com.example.chillmusic.service.ApiService;
 import com.example.chillmusic.service.RetrofitClient;
+import com.example.chillmusic.utils.AuthPreferences;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -84,7 +87,13 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
     }
 
     private void fetchOnlineSounds() {
-        ApiService api = RetrofitClient.getApiService();
+        AuthPreferences authPrefs = new AuthPreferences(this);
+        String xsrfToken = authPrefs.getXsrfToken();
+        String sessionToken = authPrefs.getSessionToken();
+
+        ApiService api = RetrofitClient.getApiService(this);
+
+
         api.getAllSounds().enqueue(new Callback<List<SoundDto>>() {
             @Override
             public void onResponse(Call<List<SoundDto>> call, Response<List<SoundDto>> response) {
@@ -104,7 +113,7 @@ public class CustomSoundPickerActivity extends AppCompatActivity implements Cust
 
     private void updateCombinedSoundItems() {
         allItems.clear();
-        String baseUrl = "http://192.168.1.15:3000/";
+        String baseUrl = "https://sleepchills.kenhtao.site/";
 
         if (!onlineSounds.isEmpty()) {
             Map<String, List<SoundItem>> groupedByCategory = new LinkedHashMap<>();

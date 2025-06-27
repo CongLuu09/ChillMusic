@@ -11,6 +11,7 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -24,7 +25,6 @@ public interface ApiService {
 
     @GET("/api/sounds")
     Call<List<SoundDto>> getSoundsByIds(@Query("ids") String commaSeparatedIds);
-
 
     @POST("/api/mix")
     Call<MixDto> createMix(@Body MixCreateRequest request);
@@ -41,6 +41,12 @@ public interface ApiService {
     @GET("/api/categories")
     Call<List<Category>> getAllCategories();
 
+    @FormUrlEncoded
+    @POST("/api/login")
+    Call<ResponseBody> login(
+            @Field("email") String email,
+            @Field("password") String password
+    );
 
 
     @Multipart
@@ -54,5 +60,4 @@ public interface ApiService {
     @Multipart
     @POST("/api/upload/audio")
     Call<UploadResponse> uploadAudio(@Part MultipartBody.Part file);
-
 }

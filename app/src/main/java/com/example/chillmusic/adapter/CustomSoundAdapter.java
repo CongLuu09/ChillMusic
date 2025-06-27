@@ -72,7 +72,7 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewHolder.tvLabel.setText(item.getName());
 
 
-            final String baseUrl = "http://192.168.1.15:3000/";
+            final String baseUrl = "https://sleepchills.kenhtao.site/";
             String imageUrl = item.getImageUrl();
             String imageToLoad = null;
             if (imageUrl != null && !imageUrl.isEmpty()) {

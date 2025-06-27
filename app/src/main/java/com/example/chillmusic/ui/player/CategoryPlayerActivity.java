@@ -1,5 +1,7 @@
 package com.example.chillmusic.ui.player;
 
+import static java.security.AccessController.getContext;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
@@ -31,6 +33,7 @@ import com.example.chillmusic.models.SoundDto;
 import com.example.chillmusic.service.ApiService;
 import com.example.chillmusic.service.RetrofitClient;
 import com.example.chillmusic.ui.custom.CustomSoundPickerActivity;
+import com.example.chillmusic.utils.AuthPreferences;
 import com.example.chillmusic.utils.DeviceUtils;
 
 import java.io.IOException;
@@ -97,7 +100,7 @@ public class CategoryPlayerActivity extends AppCompatActivity {
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             if (!imageUrl.startsWith("http")) {
-                imageUrl = "http://192.168.1.15:3000/" + imageUrl;
+                imageUrl = "https://sleepchills.kenhtao.site/" + imageUrl;
             }
 
             Glide.with(this)
@@ -130,7 +133,15 @@ public class CategoryPlayerActivity extends AppCompatActivity {
         loadSavedMixIfExists();
     }
     private void loadSoundsFromApi() {
-        ApiService api = RetrofitClient.getApiService();
+        AuthPreferences authPrefs = new AuthPreferences(this);
+        String xsrfToken = authPrefs.getXsrfToken();
+        String sessionToken = authPrefs.getSessionToken();
+
+        ApiService api = RetrofitClient.getApiService(this);
+
+
+
+
         api.getSoundsByCategory(categoryName).enqueue(new Callback<List<SoundDto>>() {
             @Override
             public void onResponse(Call<List<SoundDto>> call, Response<List<SoundDto>> response) {
@@ -238,7 +249,14 @@ public class CategoryPlayerActivity extends AppCompatActivity {
 
         MixCreateRequest request = new MixCreateRequest(deviceId, mixName, soundIds);
 
-        ApiService api = RetrofitClient.getApiService();
+        AuthPreferences authPrefs = new AuthPreferences(this);
+        String xsrfToken = authPrefs.getXsrfToken();
+        String sessionToken = authPrefs.getSessionToken();
+
+        ApiService api = RetrofitClient.getApiService(this);
+
+
+
         api.createMix(request).enqueue(new Callback<MixDto>() {
             @Override
             public void onResponse(Call<MixDto> call, Response<MixDto> response) {
@@ -257,7 +275,13 @@ public class CategoryPlayerActivity extends AppCompatActivity {
     }
 
     private void loadSavedMixIfExists() {
-        ApiService api = RetrofitClient.getApiService();
+        AuthPreferences authPrefs = new AuthPreferences(this);
+        String xsrfToken = authPrefs.getXsrfToken();
+        String sessionToken = authPrefs.getSessionToken();
+
+        ApiService api = RetrofitClient.getApiService(this);
+
+
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         api.getMixesByDevice(deviceId).enqueue(new Callback<List<MixDto>>() {
@@ -316,13 +340,20 @@ public class CategoryPlayerActivity extends AppCompatActivity {
         }
         String commaSeparatedIds = sb.toString();
 
-        ApiService api = RetrofitClient.getApiService();
+        AuthPreferences authPrefs = new AuthPreferences(this);
+        String xsrfToken = authPrefs.getXsrfToken();
+        String sessionToken = authPrefs.getSessionToken();
+
+        ApiService api = RetrofitClient.getApiService(this);
+
+
+
         api.getSoundsByIds(commaSeparatedIds).enqueue(new Callback<List<SoundDto>>() {
             @Override
             public void onResponse(Call<List<SoundDto>> call, Response<List<SoundDto>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<LayerSound> layerSounds = new ArrayList<>();
-                    String baseUrl = "http://192.168.1.15:3000/";
+                    String baseUrl = "https://sleepchills.kenhtao.site/";
 
                     for (SoundDto dto : response.body()) {
                         String fullFileUrl = (dto.getFileUrl() != null && !dto.getFileUrl().startsWith("http"))
