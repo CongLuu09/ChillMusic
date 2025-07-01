@@ -96,28 +96,40 @@ public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             CustomSound sound = item.child;
 
             childHolder.tvTitle.setText(sound.getTitle());
-            Glide.with(context).load(sound.getImageUrl()).placeholder(R.drawable.sound_airplane).into(childHolder.ivIcon);
 
+            // ✅ Xử lý URL ảnh nếu thiếu domain
+            String imageUrl = sound.getImageUrl();
+            if (imageUrl != null && !imageUrl.startsWith("http")) {
+                imageUrl = "https://sleepchills.kenhtao.site/" + imageUrl.replaceFirst("^/", "");
+            }
 
+            // ✅ Load ảnh an toàn bằng Glide
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.sound_airplane)
+                    .error(R.drawable.sound_airplane)  // fallback nếu ảnh lỗi
+                    .into(childHolder.ivIcon);
+
+            // Hiển thị trạng thái active
             boolean isActive = listener.isSoundActive(sound);
             childHolder.ivIcon.setBackgroundResource(isActive ? R.drawable.bg_sound_active : R.drawable.bg_sound_inactive);
 
-
+            // Set volume
             float volume = listener.getSoundVolume(sound);
             childHolder.seekBarVolume.setProgress((int) (volume * 100));
             childHolder.seekBarVolume.setVisibility(isActive ? View.VISIBLE : View.GONE);
 
-
+            // Click: bật/tắt
             View.OnClickListener clickListener = v -> {
                 if (listener != null) {
                     listener.onItemClick(sound);
-
-                    notifyItemChanged(position);
+                    notifyItemChanged(position);  // cập nhật lại icon + seekbar
                 }
             };
             childHolder.ivIcon.setOnClickListener(clickListener);
             childHolder.itemView.setOnClickListener(clickListener);
 
+            // Volume change
             childHolder.seekBarVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -126,11 +138,13 @@ public class CustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         listener.onVolumeChange(sound, vol);
                     }
                 }
+
                 @Override public void onStartTrackingTouch(SeekBar seekBar) {}
                 @Override public void onStopTrackingTouch(SeekBar seekBar) {}
             });
         }
     }
+
 
     @Override
     public int getItemCount() {

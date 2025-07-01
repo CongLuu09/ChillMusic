@@ -5,21 +5,29 @@ import android.media.MediaPlayer;
 import com.google.gson.annotations.SerializedName;
 
 public class LayerSound {
-    private long id = -1;
-    private String name;
+    private long id = -1;               // ID từ backend
+    private String name;               // Tên âm thanh
 
+    // Âm thanh từ API
     @SerializedName("fileSoundUrl")
     private String fileUrl;
 
     @SerializedName("fileImageUrl")
     private String imageUrl;
 
-    private int iconResId;
-    private int soundResId;
-    private float volume;
+    // Âm thanh local từ res/raw
+    private int soundResId = 0;
+
+    // Icon local (nếu dùng)
+    private int iconResId = 0;
+
+    private float volume = 0.5f;       // Mặc định 50%
     private MediaPlayer mediaPlayer;
 
+    // === Constructors ===
 
+    // Âm local
+    // Dùng cho âm thanh local (res/raw)
     public LayerSound(int iconResId, String name, int soundResId, MediaPlayer mediaPlayer, float volume) {
         this.iconResId = iconResId;
         this.name = name;
@@ -31,58 +39,104 @@ public class LayerSound {
     }
 
 
-    public LayerSound(int iconResId, String name, int soundResId, String fileUrl, float volume, String imageUrl) {
-        this.iconResId = iconResId;
+    // Âm từ API
+    public LayerSound(long id, String name, String fileUrl, String imageUrl, float volume) {
+        this.id = id;
         this.name = name;
-        this.soundResId = soundResId;
         this.fileUrl = fileUrl;
-        this.volume = volume;
         this.imageUrl = imageUrl;
-        this.mediaPlayer = null;
+        this.volume = volume;
     }
 
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    // === Getters & Setters ===
 
-    public int getIconResId() { return iconResId; }
+    public long getId() {
+        return id;
+    }
 
-    public int getSoundResId() { return soundResId; }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-    public String getFileUrl() { return fileUrl; }
-    public void setFileUrl(String fileUrl) { this.fileUrl = fileUrl; }
-
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-
-    public float getVolume() { return volume; }
-    public void setVolume(float volume) { this.volume = volume; }
-
-    public MediaPlayer getMediaPlayer() { return mediaPlayer; }
-    public void setMediaPlayer(MediaPlayer mediaPlayer) { this.mediaPlayer = mediaPlayer; }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
 
 
-    @Override
-    public String toString() {
-        return "LayerSound{" +
-                "fileUrl='" + fileUrl + '\'' +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", iconResId=" + iconResId +
-                ", soundResId=" + soundResId +
-                ", volume=" + volume +
-                ", mediaPlayer=" + mediaPlayer +
-                '}';
+    public int getSoundResId() {
+        return soundResId;
+    }
+
+    public int getIconResId() {
+        return iconResId;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public float getVolume() {
+        return volume;
+    }
+
+    public void setVolume(float volume) {
+        this.volume = volume;
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
+    public void setMediaPlayer(MediaPlayer mediaPlayer) {
+        this.mediaPlayer = mediaPlayer;
+    }
+
+    // === Utility ===
+
+    public boolean isFromApi() {
+        return fileUrl != null && !fileUrl.isEmpty();
+    }
+
+    public boolean isLocal() {
+        return soundResId != 0;
     }
 
     public void release() {
         if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
+            try {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+            } catch (Exception ignored) {}
             mediaPlayer = null;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "LayerSound{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", fileUrl='" + fileUrl + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", soundResId=" + soundResId +
+                ", iconResId=" + iconResId +
+                ", volume=" + volume +
+                '}';
     }
 }

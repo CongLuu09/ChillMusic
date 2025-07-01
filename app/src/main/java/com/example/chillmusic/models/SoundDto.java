@@ -1,70 +1,35 @@
 package com.example.chillmusic.models;
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SoundDto {
-    private int id;
-    private String name;
 
-    @SerializedName("fileSoundUrl")
-    private String fileUrl;
+    @SerializedName("id")
+    private long id;
 
-    @SerializedName("fileImageUrl")
-    private String imageUrl;
+    @SerializedName("title")
+    private String title;
 
+    @SerializedName("link_music")
+    private String link_music;
+
+    @SerializedName("avatar")
+    private String avatar;
+
+    @SerializedName("category")
     private String category;
-    private List<String> tags;
 
+    public long getId() { return id; }
 
-    public SoundDto(int id, String name, String fileUrl, String imageUrl, String category, List<String> tags) {
-        this.id = id;
-        this.name = name;
-        this.fileUrl = fileUrl;
-        this.imageUrl = imageUrl;
-        this.category = category;
-        this.tags = tags;
-    }
+    public String getTitle() { return title; }
 
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getLinkMusic() { return link_music; }
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getAvatar() { return avatar; }
 
-    public String getFileUrl() {
-        return fileUrl;
-    }
-    public void setFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
+    public String getCategory() { return category; }
 }

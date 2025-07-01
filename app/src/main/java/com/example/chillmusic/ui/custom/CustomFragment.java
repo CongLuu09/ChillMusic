@@ -20,36 +20,66 @@ import com.example.chillmusic.models.CustomSoundGroup;
 import com.example.chillmusic.models.SoundDto;
 import com.example.chillmusic.service.ApiService;
 import com.example.chillmusic.service.RetrofitClient;
-import com.example.chillmusic.utils.AuthPreferences;
+import com.example.chillmusic.service.SoundResponse;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CustomFragment extends Fragment {
+
+    private static final String TAG = "CustomFragment";
+    private static final String IMAGE_HOST = "https://sleepchills.kenhtao.site/storage/";
+
     private RecyclerView recyclerView;
     private CustomAdapter customAdapter;
-
 
     private final Map<Long, MediaPlayer> playingSounds = new HashMap<>();
     private final Set<Long> activeSoundIds = new HashSet<>();
     private final Map<Long, Float> volumeLevels = new HashMap<>();
     private final List<SoundDto> onlineSounds = new ArrayList<>();
 
+    // ==================== Lifecycle ====================
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_custom, container, false);
         recyclerView = view.findViewById(R.id.recyclerViewCustom);
+        setupRecyclerView();
+        fetchOnlineSounds();
+        return view;
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        for (MediaPlayer player : playingSounds.values()) {
+            if (player != null && player.isPlaying()) {
+                player.pause();
+            }
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        for (MediaPlayer player : playingSounds.values()) {
+            if (player != null) {
+                try {
+                    if (player.isPlaying()) player.stop();
+                } catch (IllegalStateException ignored) {}
+                player.release();
+            }
+        }
+        playingSounds.clear();
+        activeSoundIds.clear();
+        volumeLevels.clear();
+    }
+
+    // ==================== Setup RecyclerView ====================
+    private void setupRecyclerView() {
         customAdapter = new CustomAdapter(new ArrayList<>(), getContext(), new CustomAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(CustomSound sound) {
@@ -63,8 +93,7 @@ public class CustomFragment extends Fragment {
 
             @Override
             public float getSoundVolume(CustomSound sound) {
-                Float v = volumeLevels.get(sound.getId());
-                return v == null ? 1.0f : v;
+                return volumeLevels.getOrDefault(sound.getId(), 1.0f);
             }
 
             @Override
@@ -77,68 +106,71 @@ public class CustomFragment extends Fragment {
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                int type = customAdapter.getItemViewType(position);
-                return type == CustomAdapter.TYPE_GROUP ? 3 : 1;
+                return customAdapter.getItemViewType(position) == CustomAdapter.TYPE_GROUP ? 3 : 1;
             }
         });
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(customAdapter);
-
-        fetchOnlineSounds();
-        return view;
     }
 
+    // ==================== API Call ====================
     private void fetchOnlineSounds() {
-        AuthPreferences authPrefs = new AuthPreferences(requireContext());
-        String xsrfToken = authPrefs.getXsrfToken();
-        String sessionToken = authPrefs.getSessionToken();
-
-        ApiService api = RetrofitClient.getApiService(requireContext());
-
-
-        api.getAllSounds().enqueue(new Callback<List<SoundDto>>() {
+        ApiService api = RetrofitClient.getApiService();
+        api.getAllSounds().enqueue(new Callback<SoundResponse>() {
             @Override
-            public void onResponse(Call<List<SoundDto>> call, Response<List<SoundDto>> response) {
-                if (response.isSuccessful() && response.body() != null) {
+            public void onResponse(Call<SoundResponse> call, Response<SoundResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    List<SoundDto> sounds = response.body().getData().getSounds();
                     onlineSounds.clear();
-                    onlineSounds.addAll(response.body());
+                    onlineSounds.addAll(sounds);
                     updateSoundItems();
+                } else {
+                    Log.e(TAG, "❌ API trả về lỗi hoặc dữ liệu null");
                 }
             }
 
             @Override
-            public void onFailure(Call<List<SoundDto>> call, Throwable t) {
-                Log.e("CustomFragment", "❌ Failed to fetch sounds from server", t);
+            public void onFailure(Call<SoundResponse> call, Throwable t) {
+                Log.e(TAG, "❌ Không thể gọi API: " + t.getMessage(), t);
             }
         });
     }
 
+    // ==================== UI Update ====================
     private void updateSoundItems() {
-        List<CustomSoundGroup> groups = new ArrayList<>();
         Map<String, List<CustomSound>> groupedMap = new LinkedHashMap<>();
-        String baseUrl = "https://sleepchills.kenhtao.site/";
 
         for (SoundDto dto : onlineSounds) {
-            String fullFileUrl = dto.getFileUrl() != null ? baseUrl + dto.getFileUrl().replaceFirst("/", "") : null;
-            String fullImageUrl = dto.getImageUrl() != null ? baseUrl + dto.getImageUrl().replaceFirst("/", "") : null;
+            String soundUrl = dto.getLinkMusic();
+            String imageUrl = dto.getAvatar();
 
+            if (imageUrl != null && !imageUrl.startsWith("http")) {
+                imageUrl = IMAGE_HOST + imageUrl.replaceFirst("^/", "");
+            }
 
-            CustomSound sound = new CustomSound(dto.getId(), dto.getName(), fullFileUrl, fullImageUrl);
+            CustomSound sound = new CustomSound(
+                    dto.getId(),
+                    dto.getTitle(),
+                    soundUrl,
+                    imageUrl
+            );
 
             String category = dto.getCategory() != null ? dto.getCategory() : "Others";
             groupedMap.computeIfAbsent(category, k -> new ArrayList<>()).add(sound);
         }
 
-        for (String groupName : groupedMap.keySet()) {
-            groups.add(new CustomSoundGroup(groupName, groupedMap.get(groupName)));
+        List<CustomSoundGroup> groups = new ArrayList<>();
+        for (Map.Entry<String, List<CustomSound>> entry : groupedMap.entrySet()) {
+            groups.add(new CustomSoundGroup(entry.getKey(), entry.getValue()));
         }
 
-        requireActivity().runOnUiThread(() -> {
-            customAdapter.setData(groups);
-        });
+        if (isAdded()) {
+            requireActivity().runOnUiThread(() -> customAdapter.setData(groups));
+        }
     }
 
+    // ==================== MediaPlayer Handling ====================
     private void handleSoundClick(CustomSound sound) {
         long id = sound.getId();
         String url = sound.getFileUrl();
@@ -148,7 +180,7 @@ public class CustomFragment extends Fragment {
             MediaPlayer player = playingSounds.get(id);
             if (player != null) {
                 try {
-                    player.stop();
+                    if (player.isPlaying()) player.stop();
                 } catch (IllegalStateException ignored) {}
                 player.release();
             }
@@ -159,15 +191,14 @@ public class CustomFragment extends Fragment {
                 MediaPlayer player = new MediaPlayer();
                 player.setDataSource(url);
                 player.setLooping(true);
-                Float v = volumeLevels.get(id);
-                float volume = v == null ? 1.0f : v;
+                float volume = volumeLevels.getOrDefault(id, 1.0f);
                 player.setVolume(volume, volume);
                 player.prepare();
                 player.start();
                 playingSounds.put(id, player);
                 activeSoundIds.add(id);
             } catch (Exception e) {
-                Log.e("CustomFragment", "❌ Error playing sound: " + url, e);
+                Log.e(TAG, "❌ Lỗi phát âm thanh: " + url, e);
             }
         }
 
@@ -183,19 +214,28 @@ public class CustomFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        for (MediaPlayer player : playingSounds.values()) {
-            if (player != null) {
-                try {
-                    player.stop();
-                } catch (IllegalStateException ignored) {}
-                player.release();
+    // ==================== Public Utilities ====================
+    public void playSoundByName(String name) {
+        SoundDto dto = findSoundByName(name);
+        if (dto != null) {
+            CustomSound sound = new CustomSound(
+                    dto.getId(),
+                    dto.getTitle(),
+                    dto.getLinkMusic(),
+                    dto.getAvatar()
+            );
+            handleSoundClick(sound);
+        } else {
+            Log.w(TAG, "⚠ Không tìm thấy sound có tên: " + name);
+        }
+    }
+
+    private SoundDto findSoundByName(String name) {
+        for (SoundDto dto : onlineSounds) {
+            if (dto.getTitle() != null && dto.getTitle().equalsIgnoreCase(name)) {
+                return dto;
             }
         }
-        playingSounds.clear();
-        activeSoundIds.clear();
-        volumeLevels.clear();
+        return null;
     }
 }

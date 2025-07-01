@@ -4,50 +4,110 @@ import com.google.gson.annotations.SerializedName;
 
 public class SoundItem {
 
-    private long id = -1;
-    private String name;
-    private int iconResId;
-    private int soundResId;
-    private boolean locked;
+    @SerializedName("id")
+    private long id;
 
-    @SerializedName("fileSoundUrl")
+    @SerializedName("title")
+    private String name;
+
+    @SerializedName("link_music")
     private String fileUrl;
 
-    @SerializedName("fileImageUrl")
+    @SerializedName("avatar")
     private String imageUrl;
 
-    public SoundItem(long id, int iconResId, boolean locked, String name, int soundResId) {
-        this(id, iconResId, locked, name, soundResId, null, null);
+    @SerializedName("category")
+    private String category;
+
+    // Dành cho local sound (không dùng với API)
+    private int iconResId = -1;
+    private int soundResId = -1;
+
+    // Trạng thái khóa (cho Rewarded Ad)
+    private boolean locked = false;
+
+    public SoundItem() {
     }
 
-    public SoundItem(long id, int iconResId, boolean locked, String name, int soundResId, String fileUrl, String imageUrl) {
+    // Constructor cho API
+    public SoundItem(long id, String name, String fileUrl, String imageUrl, String category) {
         this.id = id;
-        this.iconResId = iconResId;
-        this.locked = locked;
         this.name = name;
-        this.soundResId = soundResId;
         this.fileUrl = fileUrl;
+        this.imageUrl = imageUrl;
+        this.category = category;
+    }
+
+    // Constructor cho local sound
+    public SoundItem(long id, String name, int iconResId, int soundResId) {
+        this.id = id;
+        this.name = name;
+        this.iconResId = iconResId;
+        this.soundResId = soundResId;
+        this.locked = false;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public String getCategory() {
+        return category;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    public int getIconResId() { return iconResId; }
-    public void setIconResId(int iconResId) { this.iconResId = iconResId; }
+    public int getIconResId() {
+        return iconResId;
+    }
 
-    public int getSoundResId() { return soundResId; }
-    public void setSoundResId(int soundResId) { this.soundResId = soundResId; }
+    public void setIconResId(int iconResId) {
+        this.iconResId = iconResId;
+    }
 
-    public boolean isLocked() { return locked; }
-    public void setLocked(boolean locked) { this.locked = locked; }
+    public int getSoundResId() {
+        return soundResId;
+    }
 
-    public String getFileUrl() { return fileUrl; }
-    public void setFileUrl(String fileUrl) { this.fileUrl = fileUrl; }
+    public void setSoundResId(int soundResId) {
+        this.soundResId = soundResId;
+    }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
 }

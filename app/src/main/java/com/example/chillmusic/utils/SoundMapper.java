@@ -9,7 +9,7 @@ public class SoundMapper {
         int defaultImageRes = getDefaultImageByCategory(dto.getCategory());
         int defaultAudioRes = 0;
 
-        return new Sound(defaultImageRes, dto.getName(), defaultAudioRes);
+        return new Sound(defaultImageRes, dto.getTitle(), defaultAudioRes);
     }
 
     private static int getDefaultImageByCategory(String category) {

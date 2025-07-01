@@ -3,51 +3,89 @@ package com.example.chillmusic.models;
 import com.google.gson.annotations.SerializedName;
 
 public class Category {
-    private long id;
 
-    private String name;
+    private int id;
 
-    @SerializedName("imageUrl")
-    private String imageUrl;
+    private String title;
 
-    @SerializedName("soundUrl")
-    private String soundUrl;
+    private String slug;
 
-    public Category(int id, String name, String imageUrl, String soundUrl) {
+    private int status;
+
+    private String avatar;
+
+    @SerializedName("created_at")
+    private String createdAt;
+
+    @SerializedName("updated_at")
+    private String updatedAt;
+
+
+    public Category(int id, String title, String slug, int status, String avatar, String createdAt, String updatedAt) {
         this.id = id;
-        this.name = name;
-        this.imageUrl = imageUrl;
-        this.soundUrl = soundUrl;
+        this.title = title;
+        this.slug = slug;
+        this.status = status;
+        this.avatar = avatar;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    public long getId() {
+
+    public int getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getSlug() {
+        return slug;
     }
 
-    public String getSoundUrl() {
-        return soundUrl;
+    public int getStatus() {
+        return status;
     }
 
-    public void setId(long id) {
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+
+    public void setId(int id) {
         this.id = id;
     }
-    public void setName(String name) {
-        this.name = name;
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
-    public void setSoundUrl(String soundUrl) {
-        this.soundUrl = soundUrl;
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

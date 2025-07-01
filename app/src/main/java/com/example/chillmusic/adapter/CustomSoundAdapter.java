@@ -33,29 +33,30 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         void onSoundClick(SoundItem item);
     }
 
+    private final Context context;
     private final List<Object> items;
     private final OnSoundClickListener listener;
-    private final Context context;
 
-    public CustomSoundAdapter(Context context, List<Object> mixedItems, OnSoundClickListener listener) {
+    public CustomSoundAdapter(Context context, List<Object> items, OnSoundClickListener listener) {
         this.context = context;
-        this.items = mixedItems;
+        this.items = items;
         this.listener = listener;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return (items.get(position) instanceof String) ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
+        return items.get(position) instanceof String ? VIEW_TYPE_HEADER : VIEW_TYPE_ITEM;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
         if (viewType == VIEW_TYPE_HEADER) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_custom_group, parent, false);
+            View view = inflater.inflate(R.layout.item_custom_group, parent, false);
             return new HeaderViewHolder(view);
         } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_sound_custom, parent, false);
+            View view = inflater.inflate(R.layout.item_sound_custom, parent, false);
             return new ItemViewHolder(view);
         }
     }
@@ -63,59 +64,53 @@ public class CustomSoundAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderViewHolder) {
-            String groupName = (String) items.get(position);
-            ((HeaderViewHolder) holder).tvGroupTitle.setText(groupName);
-        } else {
+            String groupTitle = (String) items.get(position);
+            ((HeaderViewHolder) holder).tvGroupTitle.setText(groupTitle);
+
+        } else if (holder instanceof ItemViewHolder) {
             SoundItem item = (SoundItem) items.get(position);
-            ItemViewHolder viewHolder = (ItemViewHolder) holder;
+            ItemViewHolder vh = (ItemViewHolder) holder;
 
-            viewHolder.tvLabel.setText(item.getName());
+            vh.tvLabel.setText(item.getName());
 
+            String imageUrlRaw = item.getImageUrl();
+            String imageUrl = null;
 
-            final String baseUrl = "https://sleepchills.kenhtao.site/";
-            String imageUrl = item.getImageUrl();
-            String imageToLoad = null;
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-                if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
-                    imageToLoad = imageUrl;
+            if (imageUrlRaw != null && !imageUrlRaw.isEmpty()) {
+                if (imageUrlRaw.startsWith("http://") || imageUrlRaw.startsWith("https://")) {
+                    imageUrl = imageUrlRaw;
                 } else {
-                    if (!imageUrl.startsWith("/")) {
-                        imageUrl = "/" + imageUrl;
-                    }
-                    imageToLoad = baseUrl + imageUrl;
+                    imageUrl = "https://sleepchills.kenhtao.site/" + imageUrlRaw.replaceFirst("^/", "");
                 }
-            }
 
-            Log.d("CustomSoundAdapter", "Loading image URL: " + imageToLoad);
+                final String finalImageUrl = imageUrl; // 👈 FIX: make final for inner class
 
-            if (imageToLoad != null) {
-                String finalImageToLoad = imageToLoad;
                 Glide.with(context)
-                        .load(imageToLoad)
+                        .load(finalImageUrl)
                         .placeholder(R.drawable.airplane_flying)
                         .error(R.drawable.bird_chirping)
                         .listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model,
                                                         Target<Drawable> target, boolean isFirstResource) {
-                                Log.e("CustomSoundAdapter", "❌ Image load failed: " + finalImageToLoad, e);
+                                Log.e("CustomSoundAdapter", "❌ Load failed: " + finalImageUrl, e);
                                 return false;
                             }
 
                             @Override
                             public boolean onResourceReady(Drawable resource, Object model,
-                                                           Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                Log.d("CustomSoundAdapter", "✅ Image loaded: " + finalImageToLoad);
+                                                           Target<Drawable> target, DataSource dataSource,
+                                                           boolean isFirstResource) {
                                 return false;
                             }
                         })
-                        .into(viewHolder.imgIcon);
-            } else {
-                viewHolder.imgIcon.setImageDrawable(null);
+                        .into(vh.imgIcon);
+            }
+            else {
+                vh.imgIcon.setImageResource(R.drawable.bird_chirping); // fallback if null
             }
 
-
-            viewHolder.imgLock.setVisibility(item.isLocked() ? View.VISIBLE : View.GONE);
+            vh.imgLock.setVisibility(item.isLocked() ? View.VISIBLE : View.GONE);
 
             holder.itemView.setOnClickListener(v -> {
                 if (listener != null) {

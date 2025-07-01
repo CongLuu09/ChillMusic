@@ -18,11 +18,11 @@ import com.example.chillmusic.R;
 import com.example.chillmusic.adapter.CategoryAdapter;
 import com.example.chillmusic.models.Category;
 import com.example.chillmusic.service.ApiService;
+import com.example.chillmusic.service.CategoryResponse;
 import com.example.chillmusic.service.RetrofitClient;
 import com.example.chillmusic.ui.player.CategoryPlayerActivity;
-import com.example.chillmusic.utils.AuthPreferences;
-import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,16 +33,32 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private CategoryAdapter categoryAdapter;
+    private List<Category> categoryList = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         recyclerView = view.findViewById(R.id.rv_sounds);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
+        categoryAdapter = new CategoryAdapter(getContext(), categoryList, category -> {
+            // Khi click vào category, mở CategoryPlayerActivity
+            Intent intent = new Intent(getContext(), CategoryPlayerActivity.class);
+            intent.putExtra("CATEGORY_ID", category.getId());
+            intent.putExtra("CATEGORY_TITLE", category.getTitle());
+            intent.putExtra("avatar", category.getAvatar());
+            Log.d("HomeFragment", "Title: " + category.getTitle() + " | Avatar: " + category.getAvatar());
+
+
+            startActivity(intent);
+        });
+
+        recyclerView.setAdapter(categoryAdapter);
 
         fetchCategories();
 
@@ -50,55 +66,30 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchCategories() {
+        ApiService api = RetrofitClient.getApiService();
 
-        AuthPreferences authPrefs = new AuthPreferences(requireContext());
-        String xsrfToken = authPrefs.getXsrfToken();
-        String sessionToken = authPrefs.getSessionToken();
+        api.getAllCategories(1, 20, "", "desc", "created_at")
+                .enqueue(new Callback<CategoryResponse>() {
+                    @Override
+                    public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            List<Category> categories = response.body().getData().getData();
+                            Log.d("✅", "Số category nhận được: " + categories.size());
 
-        Log.d("AUTH_TOKENS", "XSRF = " + xsrfToken);
-        Log.d("AUTH_TOKENS", "SESSION = " + sessionToken);
-
-
-        ApiService api = RetrofitClient.getApiService(requireContext());
-
-
-
-        api.getAllCategories().enqueue(new Callback<List<Category>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Category>> call, @NonNull Response<List<Category>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Category> categories = response.body();
-                    Log.d("API", "Fetched categories: " + new Gson().toJson(categories));
-
-                    categoryAdapter = new CategoryAdapter(getContext(), categories, category -> {
-                        Intent intent = new Intent(getContext(), CategoryPlayerActivity.class);
-                        intent.putExtra("categoryName", category.getName());
-                        intent.putExtra("soundUrl", category.getSoundUrl());
-                        intent.putExtra("imageUrl", category.getImageUrl());
-                        startActivity(intent);
-                    });
-
-                    recyclerView.setAdapter(categoryAdapter);
-                } else {
-                    String errorMsg = "";
-                    try {
-                        if (response.errorBody() != null) {
-                            errorMsg = response.errorBody().string();
+                            categoryList.clear();
+                            categoryList.addAll(categories);
+                            categoryAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.e("❌", "API lỗi: " + response.code());
+                            Toast.makeText(getContext(), "Không thể tải danh mục", Toast.LENGTH_SHORT).show();
                         }
-                    } catch (Exception e) {
-                        errorMsg = "Không đọc được errorBody: " + e.getMessage();
                     }
-                    Log.e("API", "Không thể tải danh sách category: " + response.code() + " | errorBody: " + errorMsg);
-                    Toast.makeText(getContext(), "Không thể tải danh sách category: " + response.code(), Toast.LENGTH_SHORT).show();
-                }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<List<Category>> call, @NonNull Throwable t) {
-                Log.e("HomeFragment", "Lỗi mạng khi tải danh sách category: " + t.getMessage(), t);
-                Toast.makeText(getContext(), "Lỗi: " + t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+                    @Override
+                    public void onFailure(Call<CategoryResponse> call, Throwable t) {
+                        Log.e("❌", "API thất bại: " + t.getMessage());
+                        Toast.makeText(getContext(), "Lỗi mạng khi tải danh mục", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
-
 }

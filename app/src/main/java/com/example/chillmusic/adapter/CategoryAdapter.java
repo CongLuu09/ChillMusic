@@ -51,10 +51,23 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Category category = categories.get(position);
-        holder.tvSoundTitle.setText(category.getName());
+        holder.tvSoundTitle.setText(category.getTitle());
 
-        String rawUrl = category.getImageUrl();
-        String imageUrl = rawUrl.startsWith("http") ? rawUrl : "https://sleepchills.kenhtao.site" + rawUrl;
+        String rawUrl = category.getAvatar();  // Lấy ra avatar từ model
+        Log.d("CategoryAdapter", "Raw avatar: " + rawUrl);
+
+        // Xử lý URL chính xác
+        String imageUrl;
+
+        if (rawUrl != null && rawUrl.startsWith("http")) {
+            imageUrl = rawUrl;
+        } else {
+            // Nếu thiếu tiền tố "/storage/" thì thêm vào
+            if (rawUrl != null && !rawUrl.startsWith("storage/") && !rawUrl.startsWith("/storage/")) {
+                rawUrl = "storage/" + rawUrl.replaceFirst("^/+", ""); // loại bỏ / thừa
+            }
+            imageUrl = "https://sleepchills.kenhtao.site/" + rawUrl;
+        }
 
         Log.d("CategoryAdapter", "Loading image from: " + imageUrl);
 
@@ -62,20 +75,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 .load(imageUrl)
                 .placeholder(R.drawable.sound_airplane)
                 .error(R.drawable.birds_singing)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                Target<Drawable> target, boolean isFirstResource) {
-                        Log.e("GlideError", "Failed to load image: " + imageUrl, e);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(@NonNull Drawable resource, Object model,
-                                                   Target<Drawable> target, @NonNull DataSource dataSource, boolean isFirstResource) {
-                        return false;
-                    }
-                })
                 .into(holder.imgSound);
 
         holder.itemView.setOnClickListener(v -> {
@@ -83,14 +82,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 listener.onCategoryClick(category);
             } else {
                 Intent intent = new Intent(context, CategoryPlayerActivity.class);
-                intent.putExtra("categoryName", category.getName());
-                intent.putExtra("soundUrl", category.getSoundUrl());
-                intent.putExtra("imageUrl", category.getImageUrl());
+                intent.putExtra("categoryId", category.getId());
+                intent.putExtra("categoryTitle", category.getTitle());
+                intent.putExtra("avatar", category.getAvatar());
                 context.startActivity(intent);
             }
         });
-
     }
+
 
     @Override
     public int getItemCount() {
@@ -107,4 +106,20 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             tvSoundTitle = itemView.findViewById(R.id.tvSoundTitle);
         }
     }
+
+
+    private String buildFullImageUrl(String rawUrl) {
+        if (rawUrl == null || rawUrl.isEmpty()) return null;
+
+        if (rawUrl.startsWith("http")) return rawUrl;
+
+        rawUrl = rawUrl.replaceFirst("^/+", "");
+        if (!rawUrl.startsWith("storage/")) {
+            rawUrl = "storage/" + rawUrl;
+        }
+
+
+        return "https://sleepchills.kenhtao.site/" + rawUrl;
+    }
+
 }
