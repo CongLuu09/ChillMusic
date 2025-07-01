@@ -22,7 +22,8 @@ public class LayerSound {
     private int iconResId = 0;
 
     private float volume = 0.5f;       // Mặc định 50%
-    private MediaPlayer mediaPlayer;
+    private transient MediaPlayer mediaPlayer;
+    private transient Runnable updateRunnable;
 
     // === Constructors ===
 

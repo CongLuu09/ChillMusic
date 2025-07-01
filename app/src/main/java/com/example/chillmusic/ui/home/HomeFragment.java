@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
         categoryAdapter = new CategoryAdapter(getContext(), categoryList, category -> {
             // Khi click vào category, mở CategoryPlayerActivity
             Intent intent = new Intent(getContext(), CategoryPlayerActivity.class);
-            intent.putExtra("CATEGORY_ID", category.getId());
+            intent.putExtra("CATEGORY_ID", Long.valueOf(category.getId()));  // Chuyển ID category
             intent.putExtra("CATEGORY_TITLE", category.getTitle());
             intent.putExtra("avatar", category.getAvatar());
             Log.d("HomeFragment", "Title: " + category.getTitle() + " | Avatar: " + category.getAvatar());
